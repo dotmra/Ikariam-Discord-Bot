@@ -4,7 +4,8 @@
   "description": "A Discord bot for the Savage Alliance Discord server.",
   "main": "app.js",
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "discord.js": "^11.4.2",
+    "fs": "0.0.1-security"
   },
   "devDependencies": {},
   "scripts": {
