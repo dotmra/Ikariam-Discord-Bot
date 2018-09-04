@@ -12,16 +12,24 @@ client.on('message', msg => {
 
   if (msg.author.bot) return;
 
-  const args = msg.content.slice(prefix.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
+  if(msg.content.startsWith(config.prefix)){
+    const args = msg.content.slice(prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
 
-  try {
-    let commandFile = require(`./commands/${command}.js`);
-    commandFile.run(client, msg, args);
-  } catch (err) {
-    console.error(err);
+    try {
+      let commandFile = require(`./commands/${command}.js`);
+      commandFile.run(client, msg, args);
+    } catch (err) {
+      if(err.code == 'MODULE_NOT_FOUND'){
+        return;
+      }
+      console.error(err);
+    }
   }
-  
+  else{
+    return;
+  }
+
 });
 
 client.login(config.token);
