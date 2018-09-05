@@ -22,7 +22,7 @@ exports.run = (bot, msg, args) => {
             color: 3447003,
             author: {
               name: result.pseudo,
-              icon_url: 'https://i.imgur.com/7ZZO9nb.png'
+              icon_url: 'https://i.imgur.com/6a7pOOv.png'
             },
             fields: [{
                 name: '**Town information:**',
