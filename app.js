@@ -13,6 +13,7 @@ bot.on('ready', () => {
 bot.on('message', msg => {
 
   if (msg.author.bot) return;
+  if (msg.channel.type === 'dm') return;
 
   if(msg.content.startsWith(config.prefix)){
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
