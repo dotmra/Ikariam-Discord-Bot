@@ -1,3 +1,3 @@
-exports.run = (client, msg, args) => {
+exports.run = (bot, msg, args) => {
 
 }

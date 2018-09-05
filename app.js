@@ -1,14 +1,16 @@
 const Discord = require('discord.js');
 const fs = require("fs");
 const config = require("./config.json");
-const client = new Discord.Client();
+const bot = new Discord.Client();
 const prefix = config.prefix;
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+bot.on('ready', () => {
+  console.log(`Logged in as ${bot.user.tag}!`);
+  bot.user.setPresence({ status: "online", game: { name: "commands", type: "LISTENING" } })
+    .catch(console.error);
 });
 
-client.on('message', msg => {
+bot.on('message', msg => {
 
   if (msg.author.bot) return;
 
@@ -18,7 +20,7 @@ client.on('message', msg => {
 
     try {
       let commandFile = require(`./commands/${command}.js`);
-      commandFile.run(client, msg, args);
+      commandFile.run(bot, msg, args);
     } catch (err) {
       if(err.code == 'MODULE_NOT_FOUND'){
         return;
@@ -32,4 +34,4 @@ client.on('message', msg => {
 
 });
 
-client.login(config.token);
+bot.login(config.token);

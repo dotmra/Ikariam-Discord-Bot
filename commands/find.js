@@ -1,4 +1,4 @@
-exports.run = (client, msg, args) => {
+exports.run = (bot, msg, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
@@ -7,8 +7,6 @@ exports.run = (client, msg, args) => {
       msg.channel.send('Could not find a player with the name ' + args.join(' ') + '. Please try again.');
     }
     else{
-      //msg.channel.send(result.pseudo);
-      //msg.channel.send(result.id);
       let preset = {};
       let resources = ['', 'Wine', 'Marble', 'Crystal', 'Sulfur'];
       let resource_emotes = ['', '<:wine:421131487992348683>', '<:marble:421131487996542977>', '<:crystal:421131487698747394>', '<:sulfur:471461212568289310>'];
@@ -18,7 +16,6 @@ exports.run = (client, msg, args) => {
       });
 
       ika.getPlayerInfo(result.id, (playerObject) => {
-        console.log(playerObject);
 
         message_embed = {
           embed: {
