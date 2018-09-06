@@ -4,7 +4,7 @@ exports.run = (bot, msg, args) => {
 
   ika.verifyPlayerName(args, (result) => {
     if(!result){
-      msg.channel.send('Could not find a player with the name ' + args.join(' ') + '. Please try again.');
+      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.)`;
     }
     else{
       let resource_emotes = ['', '<:wine:421131487992348683>', '<:marble:421131487996542977>', '<:crystal:421131487698747394>', '<:sulfur:471461212568289310>'];
@@ -33,8 +33,7 @@ exports.run = (bot, msg, args) => {
         }
 
         playerObject.cities.forEach((city) => {
-          message_embed.embed.fields[0].value += '\n**[' + city.x + ':' + city.y + ']** - ' + city.name + ' (' + city.level + ') '
-          + wonder_emotes[city.wonder_id] + resource_emotes[city.resource_id];
+          message_embed.embed.fields[0].value += `\n**[${city.x}:${city.y}]** - ${city.name} (${city.level}) ${wonder_emotes[city.wonder_id]}${resource_emotes[city.resource_id]}`;
         });
 
         msg.channel.send(message_embed);
