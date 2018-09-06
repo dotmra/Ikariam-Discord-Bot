@@ -4,7 +4,7 @@ exports.run = (bot, msg, args) => {
 
   ika.verifyPlayerName(args, (result) => {
     if(!result){
-      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.)`;
+      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else{
       let resource_emotes = ['', '<:wine:421131487992348683>', '<:marble:421131487996542977>', '<:crystal:421131487698747394>', '<:sulfur:471461212568289310>'];
