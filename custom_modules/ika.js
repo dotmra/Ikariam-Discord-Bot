@@ -1,4 +1,5 @@
 const request = require('request-promise-native');
+const fs = require("fs");
 
 module.exports = {
   ikaTest: function(args) {
@@ -66,6 +67,20 @@ module.exports = {
       }
       else{
         callback(player);
+      }
+    });
+  },
+
+  verifyIslandCoordAndGetId: function(x_coord, y_coord, callback) {
+    fs.readFile('./data/islands.json', 'UTF-8', (err, data) => {
+      if (err) throw err;
+      let json_data = JSON.parse(data);
+      let island = json_data.islands.find(item => item.x == x_coord && item.y == y_coord);
+      if(island == null){
+        callback(false);
+      }
+      else{
+        callback(island);
       }
     });
   }
