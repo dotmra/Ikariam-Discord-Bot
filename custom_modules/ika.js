@@ -44,6 +44,24 @@ module.exports = {
     });
   },
 
+  getScoresInfo: function(playerId, scoreCategory, timeAmount, timeType, callback) {
+    request.post({
+      url:'http://ika-search.com/getSite.py',
+      form: {
+        action: "getScores",
+        dateNum: timeAmount,
+        dateType: timeType,
+        index: playerId,
+        iso: "us",
+        scoreType: scoreCategory,
+        server: "Dionysos",
+        type: "player"
+      }
+    }, (error, response, body) => {
+      callback(JSON.parse(body));
+    });
+  },
+
   getTr: function(callback) {
     request.post({
       url: 'http://ika-search.com/getSite.py',
