@@ -35,7 +35,7 @@ exports.run = (bot, msg, args) => {
           embed: {
             color: 3447003,
             author: {
-              name: result.pseudo,
+              name: '',
               icon_url: 'https://i.imgur.com/hasGiOH.png'
             },
             fields: [{
@@ -51,28 +51,38 @@ exports.run = (bot, msg, args) => {
           }
         }
 
-        let growthPercentage = ((results[results.length - 1].v - results[0].v) / results[0].v) * 100;
-        let growthPoints = results[results.length - 1].v - results[0].v;
+        ika.getPlayerInfo(result.id, (playerObject) => {
+          if (playerObject.player.tag) {
+            message_embed.embed.author.name = `${result.pseudo} (${playerObject.player.tag})`;
+          }
+          else {
+            message_embed.embed.author.name = `${result.pseudo}`;
+          }
 
-        message_embed.embed.fields[0].value += `\n**${results[0].v.format()} -> ${results[results.length - 1].v.format()}**`;
-        message_embed.embed.fields[0].value += `\n**#${Math.abs(results[0].r)} -> #${Math.abs(results[results.length - 1].r)}**`;
+          let growthPercentage = ((results[results.length - 1].v - results[0].v) / results[0].v) * 100;
+          let growthPoints = results[results.length - 1].v - results[0].v;
 
-        if(growthPercentage < 0) {
-          message_embed.embed.fields[0].value += `\n**${growthPoints.format()}** Points`;
-          message_embed.embed.fields[0].value += `\n**${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
-        }
-        else {
-          message_embed.embed.fields[0].value += `\n**+${growthPoints.format()}** Points`;
-          message_embed.embed.fields[0].value += `\n**+${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
-        }
+          message_embed.embed.fields[0].value += `\n**${results[0].v.format()} -> ${results[results.length - 1].v.format()}**`;
+          message_embed.embed.fields[0].value += `\n**#${Math.abs(results[0].r)} -> #${Math.abs(results[results.length - 1].r)}**`;
 
-        results.forEach((result) => {
-          let date = new Date(result.d);
-          let points = result.v;
-          let position = result.r;
+          if(growthPercentage < 0) {
+            message_embed.embed.fields[0].value += `\n**${growthPoints.format()}** Points`;
+            message_embed.embed.fields[0].value += `\n**${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
+          }
+          else {
+            message_embed.embed.fields[0].value += `\n**+${growthPoints.format()}** Points`;
+            message_embed.embed.fields[0].value += `\n**+${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
+          }
+
+          results.forEach((result) => {
+            let date = new Date(result.d);
+            let points = result.v;
+            let position = result.r;
+          });
+
+          msg.channel.send(message_embed);
+
         });
-
-        msg.channel.send(message_embed);
       });
     }
 
