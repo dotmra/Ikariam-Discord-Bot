@@ -2,9 +2,6 @@ const request = require('request-promise-native');
 const fs = require("fs");
 
 module.exports = {
-  ikaTest: function(args) {
-    console.log(args.toString());
-  },
 
   getPlayerIds: function(callback) {
     request.post({
