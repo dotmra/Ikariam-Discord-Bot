@@ -33,10 +33,10 @@ exports.run = (bot, msg, args) => {
         }
 
         if (playerObject.player.tag) {
-          message_embed.embed.author.name = `${result.pseudo} (${playerObject.player.tag})`
+          message_embed.embed.author.name = `${result.pseudo} (${playerObject.player.tag})`;
         }
         else {
-          message_embed.embed.author.name = `${result.pseudo}`
+          message_embed.embed.author.name = `${result.pseudo}`;
         }
 
         playerObject.cities.forEach((city) => {
