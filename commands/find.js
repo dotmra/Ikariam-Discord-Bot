@@ -16,7 +16,7 @@ exports.run = (bot, msg, args) => {
           embed: {
             color: 3447003,
             author: {
-              name: result.pseudo,
+              name: '',
               icon_url: 'https://i.imgur.com/6a7pOOv.png'
             },
             fields: [{
@@ -30,6 +30,13 @@ exports.run = (bot, msg, args) => {
               text: 'ika-search.com'
             }
           }
+        }
+
+        if (playerObject.player.tag) {
+          message_embed.embed.author.name = `${result.pseudo} (${playerObject.player.tag})`
+        }
+        else {
+          message_embed.embed.author.name = `${result.pseudo}`
         }
 
         playerObject.cities.forEach((city) => {
