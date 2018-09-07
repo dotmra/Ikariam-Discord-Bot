@@ -19,7 +19,7 @@ exports.run = (bot, msg, args) => {
           embed: {
             color: 3447003,
             author: {
-              name: `${result.pseudo} (${player.tag})`,
+              name: '',
               icon_url: 'https://i.imgur.com/hasGiOH.png'
             },
             fields: [{
@@ -46,6 +46,29 @@ exports.run = (bot, msg, args) => {
               text: 'ika-search.com'
             }
           }
+        }
+
+        if (player.tag) {
+          message_embed.embed.author.name = `${result.pseudo} (${player.tag})`
+        }
+        else {
+          message_embed.embed.author.name = `${result.pseudo}`
+        }
+
+        if(player.id == 890) {
+          message_embed.embed.author.name += ' aka the Best Player'
+        }
+
+        if(player.id == 599) {
+          message_embed.embed.author.name += ' aka the Bully'
+        }
+
+        if(player.id == 4804) {
+          message_embed.embed.author.name += ' aka the Beast'
+        }
+
+        if(player.id == 458) {
+          message_embed.embed.author.name += ' aka the Sleepless Pirate'
         }
 
         msg.channel.send(message_embed);
