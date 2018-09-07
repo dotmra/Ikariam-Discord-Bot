@@ -19,7 +19,7 @@ exports.run = (bot, msg, args) => {
           embed: {
             color: 3447003,
             author: {
-              name: result.pseudo,
+              name: `${result.pseudo} (${player.tag})`,
               icon_url: 'https://i.imgur.com/hasGiOH.png'
             },
             fields: [{
