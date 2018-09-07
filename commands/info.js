@@ -49,26 +49,26 @@ exports.run = (bot, msg, args) => {
         }
 
         if (player.tag) {
-          message_embed.embed.author.name = `${result.pseudo} (${player.tag})`
+          message_embed.embed.author.name = `${result.pseudo} (${player.tag})`;
         }
         else {
-          message_embed.embed.author.name = `${result.pseudo}`
+          message_embed.embed.author.name = `${result.pseudo}`;
         }
 
         if(player.id == 890) {
-          message_embed.embed.author.name += ' aka the Best Player'
+          message_embed.embed.author.name += ' aka the Best Player';
         }
 
         if(player.id == 599) {
-          message_embed.embed.author.name += ' aka the Bully'
+          message_embed.embed.author.name += ' aka the Bully';
         }
 
         if(player.id == 4804) {
-          message_embed.embed.author.name += ' aka the Beast'
+          message_embed.embed.author.name += ' aka the Beast';
         }
 
         if(player.id == 458) {
-          message_embed.embed.author.name += ' aka the Sleepless Pirate'
+          message_embed.embed.author.name += ' aka the Sleepless Pirate';
         }
 
         msg.channel.send(message_embed);
