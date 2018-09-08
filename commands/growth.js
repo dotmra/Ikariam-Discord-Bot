@@ -6,9 +6,26 @@ exports.run = (bot, msg, args) => {
   Number.prototype.format = function () {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+  
   let argsArray = args.join(' ').split(', ');
   let playerName = [argsArray[0]];
-  let scoreTypeArgs = [argsArray[1]];
+  let scoreTypeArgs = ["Total Score"];
+  let dateNum = 30;
+  let dateType = 'DAY';
+
+  if(argsArray.length == 1) {
+    playerName = [argsArray[0]];
+  }
+  else if(argsArray.length == 2) {
+    scoreTypeArgs = [argsArray[1]];
+  }
+  else if(argsArray.length == 3) {
+    dateNum = [argsArray[2]].join('');
+    dateType = 'DAY';
+  }
+  else {
+    msg.channel.send(`Correct usage: !growth <PlayerName>, [Score Category], [Time in Days]\n*(Score Category and Time in Days is optional. Without <> and [], remember the commas*`);
+  }
 
   ika.verifyPlayerName(playerName, (result) => {
 
@@ -26,33 +43,26 @@ exports.run = (bot, msg, args) => {
         if (err) throw err;
         let json_data = JSON.parse(data);
 
-        let test = json_data.scoreType.find(item => item.name == scoreTypeArgs.join(' ').toLowerCase());
+        let scoreTypeItem = json_data.scoreType.find(item => item.name == scoreTypeArgs.join(' ').toLowerCase());
 
-        if(!test) {
-          test = json_data.scoreType.find(item => item.alias1 == scoreTypeArgs.join(' ').toLowerCase());
+        if(!scoreTypeItem) {
+          scoreTypeItem = json_data.scoreType.find(item => item.alias1 == scoreTypeArgs.join(' ').toLowerCase());
         }
-        if(!test) {
-          test = json_data.scoreType.find(item => item.alias2 == scoreTypeArgs.join(' ').toLowerCase());
+        if(!scoreTypeItem) {
+          scoreTypeItem = json_data.scoreType.find(item => item.alias2 == scoreTypeArgs.join(' ').toLowerCase());
         }
-        if(!test) {
-          test = json_data.scoreType.find(item => item.alias3 == scoreTypeArgs.join(' ').toLowerCase());
+        if(!scoreTypeItem) {
+          scoreTypeItem = json_data.scoreType.find(item => item.alias3 == scoreTypeArgs.join(' ').toLowerCase());
         }
-        if(!test) {
-          test = json_data.scoreType.find(item => item.alias4 == scoreTypeArgs.join(' ').toLowerCase());
+        if(!scoreTypeItem) {
+          scoreTypeItem = json_data.scoreType.find(item => item.alias4 == scoreTypeArgs.join(' ').toLowerCase());
         }
-        if(!test) {
+        if(!scoreTypeItem) {
           msg.channel.send(`Could not find a score category with the name ${scoreTypeArgs.join(' ')}. Please try again.`);
         }
         else {
-          scoreType = test.name;
-          scoreTypeFriendly = test.friendlyName;
-
-          let timePeriod = [argsArray[2]];
-
-          console.log([argsArray[2]].join(''));
-
-          let dateNum = [argsArray[2]].join('');
-          let dateType = 'DAY';
+          scoreType = scoreTypeItem.name;
+          scoreTypeFriendly = scoreTypeItem.friendlyName;
 
           ika.getScoresInfo(result.id, scoreType, dateNum, dateType, (results) => {
 
