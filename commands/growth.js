@@ -6,7 +6,7 @@ exports.run = (bot, msg, args) => {
   Number.prototype.format = function () {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-  
+
   let argsArray = args.join(' ').split(', ');
   let playerName = [argsArray[0]];
   let scoreTypeArgs = ["Total Score"];
@@ -20,6 +20,7 @@ exports.run = (bot, msg, args) => {
     scoreTypeArgs = [argsArray[1]];
   }
   else if(argsArray.length == 3) {
+    scoreTypeArgs = [argsArray[1]];
     dateNum = [argsArray[2]].join('');
     dateType = 'DAY';
   }
@@ -33,9 +34,6 @@ exports.run = (bot, msg, args) => {
       msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else {
-
-      // TODO: add support for input like score category and time period
-      // Command usage should be: !growth <player name>, [score category], [time period]
 
       let scoreType = '';
       let scoreTypeFriendly = '';
