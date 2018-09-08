@@ -8,7 +8,7 @@ exports.run = (bot, msg, args) => {
 
   ika.verifyPlayerName(args, (result) => {
     if(!result){
-      msg.channel.send('Could not find a player with the name ' + args.join(' ') + '. Please try again.');
+      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else{
       ika.getPlayerInfo(result.id, (playerObject) => {
