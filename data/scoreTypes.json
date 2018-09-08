@@ -1,0 +1,124 @@
+{
+  "scoreType":[
+    {
+      "name": "trader_score_secondary",
+      "friendlyName": "Gold Stock",
+      "alias1": "gold stock",
+      "alias2": "gold",
+      "alias3": "total gold",
+      "alias4": ""
+    },
+    {
+      "name": "score",
+      "friendlyName": "Total Score",
+      "alias1": "total score",
+      "alias2": "total",
+      "alias3": "ts",
+      "alias4": ""
+    },
+    {
+      "name": "research_score_secondary",
+      "friendlyName": "Levels of Research",
+      "alias1": "levels of research",
+      "alias2": "research levels",
+      "alias3": "research secondary",
+      "alias4": "scientists levels"
+    },
+    {
+      "name": "building_score_secondary",
+      "friendlyName": "Building Levels",
+      "alias1": "building levels",
+      "alias2": "building secondary",
+      "alias3": "levels of buildings",
+      "alias4": ""
+    },
+    {
+      "name": "army_score_main",
+      "friendlyName": "Military Score",
+      "alias1": "military",
+      "alias2": "army",
+      "alias3": "ms",
+      "alias4": ""
+    },
+    {
+      "name": "building_score_main",
+      "friendlyName": "Master Builders",
+      "alias1": "master builders",
+      "alias2": "builder",
+      "alias3": "builders",
+      "alias4": ""
+    },
+    {
+      "name": "trade",
+      "friendlyName": "Trader Score",
+      "alias1": "trader",
+      "alias2": "trade score",
+      "alias3": "trader score",
+      "alias4": "trading"
+    },
+    {
+      "name": "piracy",
+      "friendlyName": "Capture Points",
+      "alias1": "capture points",
+      "alias2": "piracy",
+      "alias3": "pirate",
+      "alias4": "cp"
+    },
+    {
+      "name": "defense",
+      "friendlyName": "Defence Points",
+      "alias1": "defence points",
+      "alias2": "defense points",
+      "alias3": "defence",
+      "alias4": "defense"
+    },
+    {
+      "name": "donations",
+      "friendlyName": "Donation Score",
+      "alias1": "donations",
+      "alias2": "donation score",
+      "alias3": "donation",
+      "alias4": ""
+    },
+    {
+      "name": "research_score_main",
+      "friendlyName": "Scientist Score",
+      "alias1": "scientists",
+      "alias2": "scientists score",
+      "alias3": "scientist score",
+      "alias4": "research"
+    },
+    {
+      "name": "offense",
+      "friendlyName": "Offensive Points",
+      "alias1": "offensive points",
+      "alias2": "offensive score",
+      "alias3": "offense score",
+      "alias4": "op"
+    },
+    {
+      "name": "resources",
+      "friendlyName": "Resource Score",
+      "alias1": "resources",
+      "alias2": "resource score",
+      "alias3": "resources score",
+      "alias4": "res"
+    }
+  ],
+  "allyScoreType":{
+    "researchSecondaryScore":"Levels of research",
+    "buildingSecondaryScore":"Building levels",
+    "tradeMainScore":"Trader",
+    "resourcesScore":"Resources",
+    "piracyScore":"Capture Points",
+    "avg_score":"Average points",
+    "armyMainScore":"Military",
+    "score":"Total score",
+    "buildingMainScore":"Master builders",
+    "donationsScore":"Donations",
+    "researchMainScore":"Scientists",
+    "offenseScore":"Offensive points",
+    "defenseScore":"Defence points",
+    "tradeSecondaryScore":"Gold stock"
+  }
+}
