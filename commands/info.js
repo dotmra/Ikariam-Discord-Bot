@@ -71,6 +71,13 @@ exports.run = (bot, msg, args) => {
           message_embed.embed.author.name += ' aka the Sleepless Pirate';
         }
 
+        if(player.state == 1){
+          message_embed.embed.fields[0].name += ' <:vacation:421152426427416578>';
+        }
+        if(player.state == 2){
+          message_embed.embed.fields[0].name += ' <:inactive:476253259275960320>';
+        }
+
         msg.channel.send(message_embed);
 
       });
