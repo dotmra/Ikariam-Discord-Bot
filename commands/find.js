@@ -39,6 +39,13 @@ exports.run = (bot, msg, args) => {
           message_embed.embed.author.name = `${result.pseudo}`;
         }
 
+        if(playerObject.player.state == 1){
+          message_embed.embed.fields[0].name += ' <:vacation:421152426427416578>';
+        }
+        if(playerObject.player.state == 2){
+          message_embed.embed.fields[0].name += ' <:inactive:476253259275960320>';
+        }
+
         playerObject.cities.forEach((city) => {
           message_embed.embed.fields[0].value += `\n**[${city.x}:${city.y}]** - ${city.name} (${city.level}) ${wonder_emotes[city.wonder_id]}${resource_emotes[city.resource_id]}`;
         });
