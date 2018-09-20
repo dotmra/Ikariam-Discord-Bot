@@ -36,3 +36,5 @@ bot.on('message', msg => {
 });
 
 bot.login(config.token);
+
+bot.on('error', console.error);
