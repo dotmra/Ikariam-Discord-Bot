@@ -1,4 +1,4 @@
-exports.run = (bot, msg, args) => {
+exports.run = (server, bot, msg, args) => {
 
   const ika = require('../custom_modules/ika.js');
   const fs = require("fs");
@@ -28,7 +28,7 @@ exports.run = (bot, msg, args) => {
     msg.channel.send(`Correct usage: !growth <PlayerName>, [Score Category], [Time in Days]\n*(Score Category and Time in Days is optional. Without <> and [], remember the commas*`);
   }
 
-  ika.verifyPlayerName(playerName, (result) => {
+  ika.verifyPlayerName(msg, playerName, server, (result) => {
 
     if(!result) {
       msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
@@ -62,7 +62,7 @@ exports.run = (bot, msg, args) => {
           scoreType = scoreTypeItem.name;
           scoreTypeFriendly = scoreTypeItem.friendlyName;
 
-          ika.getScoresInfo(result.id, scoreType, dateNum, dateType, (results) => {
+          ika.getScoresInfo(msg, result.id, scoreType, dateNum, dateType, server, (results) => {
 
             let daysAmount1 = new Date(Date.parse(results[results.length - 1].d)).getTime() - new Date(Date.parse(results[0].d)).getTime();
             let daysAmount2 = Math.ceil(daysAmount1 / (1000 * 3600 * 24));
@@ -87,7 +87,7 @@ exports.run = (bot, msg, args) => {
               }
             }
 
-            ika.getPlayerInfo(result.id, (playerObject) => {
+            ika.getPlayerInfo(msg, result.id, server, (playerObject) => {
               if (playerObject.player.tag) {
                 message_embed.embed.author.name = `${result.pseudo} (${playerObject.player.tag})`;
               }
