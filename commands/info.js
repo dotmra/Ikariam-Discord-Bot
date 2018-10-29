@@ -1,4 +1,4 @@
-exports.run = (bot, msg, args) => {
+exports.run = (server, bot, msg, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
@@ -6,12 +6,12 @@ exports.run = (bot, msg, args) => {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  ika.verifyPlayerName(args, (result) => {
+  ika.verifyPlayerName(msg, args, server, (result) => {
     if(!result){
       msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else{
-      ika.getPlayerInfo(result.id, (playerObject) => {
+      ika.getPlayerInfo(msg, result.id, server, (playerObject) => {
 
         player = playerObject.player;
 
