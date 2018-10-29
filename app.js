@@ -91,6 +91,9 @@ bot.on('message', msg => {
       else if (msg.channel.id == "506392376961662987") {
         commandFile.run("Eirene", bot, msg, args);
       }
+      else {
+        return;
+      }
     } catch (err) {
       if(err.code == 'MODULE_NOT_FOUND'){
         return;
