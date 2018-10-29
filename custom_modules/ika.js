@@ -3,48 +3,48 @@ const fs = require("fs");
 
 module.exports = {
 
-  getPlayerIds: function(callback) {
+  getPlayerIds: function(msg, server, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "autocompleteList",
         iso: "us",
-        server: "Dionysos"
+        server: server
       }
     }, (error, response, body) => {
       callback(JSON.parse(body).player);
     });
   },
 
-  getPlayerInfo: function(playerId, callback) {
+  getPlayerInfo: function(msg, playerId, server, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "playerInfo",
         iso: "us",
         playerId: playerId,
-        server: "Dionysos"
+        server: server
       }
     }, (error, response, body) => {
       callback(JSON.parse(body));
     });
   },
 
-  getIslandInfo: function(islandId, callback) {
+  getIslandInfo: function(msg, islandId, server, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "islandCities",
         iso: "us",
         islandId: islandId,
-        server: "Dionysos"
+        server: server
       }
     }, (error, response, body) => {
       callback(JSON.parse(body));
     });
   },
 
-  getScoresInfo: function(playerId, scoreCategory, timeAmount, timeType, callback) {
+  getScoresInfo: function(msg, playerId, scoreCategory, timeAmount, timeType, server, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -54,7 +54,7 @@ module.exports = {
         index: playerId,
         iso: "us",
         scoreType: scoreCategory,
-        server: "Dionysos",
+        server: server,
         type: "player"
       }
     }, (error, response, body) => {
@@ -62,7 +62,7 @@ module.exports = {
     });
   },
 
-  getTr: function(callback) {
+  getTr: function(msg, callback) {
     request.post({
       url: 'http://ika-search.com/getSite.py',
       form: {
@@ -74,8 +74,8 @@ module.exports = {
     });
   },
 
-  verifyPlayerName: function(args, callback) {
-    module.exports.getPlayerIds((playerArray) => {
+  verifyPlayerName: function(msg, server, args, callback) {
+    module.exports.getPlayerIds(msg, server, (playerArray) => {
       let player = playerArray.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
       if(player == null){
         callback(false);
@@ -86,7 +86,7 @@ module.exports = {
     });
   },
 
-  verifyIslandCoordAndGetId: function(x_coord, y_coord, callback) {
+  verifyIslandCoordAndGetId: function(msg, x_coord, y_coord, callback) {
     fs.readFile('./data/islands.json', 'UTF-8', (err, data) => {
       if (err) throw err;
       let json_data = JSON.parse(data);
