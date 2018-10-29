@@ -72,10 +72,10 @@ exports.run = (server, bot, msg, args) => {
         }
 
         if(player.state == 1){
-          message_embed.embed.fields[0].name += ' <:vacation:421152426427416578>';
+          message_embed.embed.fields[0].name += ' <:vacation:506517055701385218>';
         }
         if(player.state == 2){
-          message_embed.embed.fields[0].name += ' <:inactive:476253259275960320>';
+          message_embed.embed.fields[0].name += ' <:inactive:506517055466635284>';
         }
 
         msg.channel.send(message_embed);
