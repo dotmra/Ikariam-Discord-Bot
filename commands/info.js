@@ -6,12 +6,12 @@ exports.run = (server, bot, msg, args) => {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  ika.verifyPlayerName(msg, args, server, (result) => {
+  ika.verifyPlayerName(msg, server, args, (result) => {
     if(!result){
       msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else{
-      ika.getPlayerInfo(msg, result.id, server, (playerObject) => {
+      ika.getPlayerInfo(msg, server, result.id, (playerObject) => {
 
         player = playerObject.player;
 

@@ -16,7 +16,7 @@ module.exports = {
     });
   },
 
-  getPlayerInfo: function(msg, playerId, server, callback) {
+  getPlayerInfo: function(msg, server, playerId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -30,7 +30,7 @@ module.exports = {
     });
   },
 
-  getIslandInfo: function(msg, islandId, server, callback) {
+  getIslandInfo: function(msg, server, islandId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -44,7 +44,7 @@ module.exports = {
     });
   },
 
-  getScoresInfo: function(msg, playerId, scoreCategory, timeAmount, timeType, server, callback) {
+  getScoresInfo: function(msg, server, playerId, scoreCategory, timeAmount, timeType, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -86,7 +86,7 @@ module.exports = {
     });
   },
 
-  verifyIslandCoordAndGetId: function(msg, x_coord, y_coord, callback) {
+  verifyIslandCoordAndGetId: function(msg, server, x_coord, y_coord, callback) {
     fs.readFile('./data/islands.json', 'UTF-8', (err, data) => {
       if (err) throw err;
       let json_data = JSON.parse(data);

@@ -10,7 +10,7 @@ exports.run = (server, bot, msg, args) => {
       let resource_emotes = ['', '<:wine:421131487992348683>', '<:marble:421131487996542977>', '<:crystal:421131487698747394>', '<:sulfur:471461212568289310>'];
       let wonder_emotes = ['', '<:forge:475413159583416350>', '<:hadesholygrove:475413418740809746>', '<:demetersgarden:475413432619761684>', '<:templeofathene:475413409085784095>', '<:templeofhermes:475413401179521031>', '<:aresstronghold:475413440387874826>', '<:poseidon:475413036253970442>', '<:colossus:475413055371608064>'];
 
-      ika.getPlayerInfo(msg, result.id, server, (playerObject) => {
+      ika.getPlayerInfo(msg, server, result.id, (playerObject) => {
 
         message_embed = {
           embed: {

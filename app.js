@@ -84,7 +84,7 @@ bot.on('message', msg => {
       else if (msg.channel.id == "449248065887404032") {
         commandFile.run("Warserver+03", bot, msg, args);
       }
-
+      // The 2 below channels are in test server
       else if (msg.channel.id == "506392322448162817") {
         commandFile.run("Dionysos", bot, msg, args);
       }
