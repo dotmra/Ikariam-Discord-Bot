@@ -1,8 +1,8 @@
-exports.run = (bot, msg, args) => {
+exports.run = (server, bot, msg, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
-  ika.verifyPlayerName(args, (result) => {
+  ika.verifyPlayerName(msg, server, args, (result) => {
     if(!result){
       msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
@@ -10,7 +10,7 @@ exports.run = (bot, msg, args) => {
       let resource_emotes = ['', '<:wine:421131487992348683>', '<:marble:421131487996542977>', '<:crystal:421131487698747394>', '<:sulfur:471461212568289310>'];
       let wonder_emotes = ['', '<:forge:475413159583416350>', '<:hadesholygrove:475413418740809746>', '<:demetersgarden:475413432619761684>', '<:templeofathene:475413409085784095>', '<:templeofhermes:475413401179521031>', '<:aresstronghold:475413440387874826>', '<:poseidon:475413036253970442>', '<:colossus:475413055371608064>'];
 
-      ika.getPlayerInfo(result.id, (playerObject) => {
+      ika.getPlayerInfo(msg, result.id, server, (playerObject) => {
 
         message_embed = {
           embed: {
