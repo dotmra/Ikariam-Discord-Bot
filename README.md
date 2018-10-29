@@ -1,1 +1,1 @@
-# Savage-Discord-Bot
+# Ikariam-Discord-Bot
