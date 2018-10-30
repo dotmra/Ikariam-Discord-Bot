@@ -1,13 +1,43 @@
 const Discord = require('discord.js');
 const fs = require('fs');
+const RssFeedEmitter = require('rss-feed-emitter');
 const config = require('./config.json');
 const bot = new Discord.Client();
 const prefix = config.prefix;
+
+let feeder = new RssFeedEmitter();
+feeder.add({
+  url: 'http://lorem-rss.herokuapp.com/feed', //https://board.us.ikariam.gameforge.com/index.php/BoardFeed/24/
+});
 
 bot.on('ready', () => {
   console.log(`Logged in as ${bot.user.tag}!`);
   bot.user.setPresence({ status: 'online', game: { name: 'commands', type: 'LISTENING' } })
     .catch(console.error);
+
+  feeder.on('new-item', function(item) {
+    console.log(item);
+    message_embed = {
+      embed: {
+        color: 3447003,
+        author: {
+          name: 'Game News!'
+        },
+        fields: [{
+            name: item.title,
+            value: item.description + "\n\n" + item.link
+          }
+        ],
+        timestamp: Date.parse(item.meta.date),
+        footer: {
+          icon_url: 'https://i.imgur.com/ZH9wOAQ.png',
+          text: 'board.us.ikariam.gameforge.com'
+        }
+      }
+    }
+    //bot.channels.get("491615733785165825").send(message_embed);
+  });
+
 });
 
 bot.on('message', msg => {
