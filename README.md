@@ -1,5 +1,7 @@
 # Ikariam-Discord-Bot
 
+This bot retrieves information from http://ika-search.com/ and makes the information accessible via commands, so you can easily lookup information about players without leaving Discord, and making it especially easy on mobile.
+
 ## Current Commands:
 - !find (Player Name)
 -- Shows a list of the specified players towns
