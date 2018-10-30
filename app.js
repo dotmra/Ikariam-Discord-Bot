@@ -16,7 +16,7 @@ bot.on('ready', () => {
     .catch(console.error);
 
   feeder.on('new-item', function(item) {
-    console.log(item);
+    //console.log(item);
     message_embed = {
       embed: {
         color: 3447003,
@@ -112,7 +112,7 @@ bot.on('message', msg => {
         commandFile.run("Eirene", bot, msg, args);
       }
       else if (msg.channel.id == "449248065887404032") {
-        commandFile.run("Warserver+03", bot, msg, args);
+        commandFile.run("Warserver 03", bot, msg, args);
       }
       else {
         return;
