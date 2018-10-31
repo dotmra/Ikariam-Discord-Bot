@@ -8,6 +8,11 @@ const client = new Discord.Client();
 const config = require('./config.json');
 const prefix = config.prefix;
 
+let feeder = new RssFeedEmitter();
+feeder.add({
+  url: 'http://lorem-rss.herokuapp.com/feed', //https://board.us.ikariam.gameforge.com/index.php/BoardFeed/24/
+});
+
 client.settings = new Enmap({
   name: "settings",
   fetchAll: false,
@@ -18,40 +23,17 @@ client.settings = new Enmap({
 
 const defaultSettings = {
   prefix: "!",
-  modLogChannel: "mod-log",
-  modRole: "Mod",
   adminRole: "Admin",
-  welcomeChannel: "welcome",
-  welcomeMessage: "Say hello to {{user}}, everyone!"
+  commandMode: "ALL",
+  commandModeAllServer: "",
+  channelServers: {
+    // 507181827207987201: "Dionysos"
+  },
+  newsChannel: "" // Channel to post News from Ikariam Boards
 }
 
 client.on("guildDelete", guild => {
-  // When the bot leaves or is kicked, delete settings to prevent stale entries.
   client.settings.delete(guild.id);
-});
-
-client.on("guildMemberAdd", member => {
-  // This executes when a member joins, so let's welcome them!
-
-  // First, ensure the settings exist
-  client.settings.ensure(member.guild.id, defaultSettings);
-
-  // Then, get the welcome message using get:
-  let welcomeMessage = client.settings.get(member.guild.id, "welcomeMessage");
-
-  // Our welcome message has a bit of a placeholder, let's fix that:
-  welcomeMessage = welcomeMessage.replace("{{user}}", member.user.tag)
-
-  // we'll send to the welcome channel.
-  member.guild.channels
-    .find("name", client.settings.get(member.guild.id, "welcomeChannel"))
-    .send(welcomeMessage)
-    .catch(console.error);
-});
-
-let feeder = new RssFeedEmitter();
-feeder.add({
-  url: 'http://lorem-rss.herokuapp.com/feed', //https://board.us.ikariam.gameforge.com/index.php/BoardFeed/24/
 });
 
 client.on('ready', () => {
@@ -84,17 +66,12 @@ client.on('ready', () => {
 
 });
 
-client.on('message', message => {
+client.on('message', async (message) => {
 
-  // This stops if the message is not sent in a guild(Discord Server), and we ignore all bots.
   if(!message.guild || message.author.bot) return;
 
-  // We can use ensure() to actually grab the default value for settings,
-  // IF the key doesn't already exist.
   const guildConf = client.settings.ensure(message.guild.id, defaultSettings);
 
-  // Now we can use the values!
-  // We stop processing if the message does not start with our prefix for this guild.
   if(message.content.indexOf(guildConf.prefix) !== 0) return;
 
   const args = message.content.split(/\s+/g);
@@ -103,15 +80,104 @@ client.on('message', message => {
   try {
     let commandFile = require(`./commands/${command}.js`);
 
-    if (command === "setconf") {
+    if (command === "commands") {
+      commandFile.run(message, args);
+    }
+
+    /*if (command === "setconf") {
+      commandFile.run(guildConf, client, message, args);
+    }*/
+
+    /*if (command === "showconf") {
+      commandFile.run(guildConf, client, message, args);
+    }*/
+
+    if (command === "addserver") {
       commandFile.run(guildConf, client, message, args);
     }
 
-    if (command === "showconf") {
+    if (command === "globalserver") {
       commandFile.run(guildConf, client, message, args);
+    }
+
+    if (command === "find") {
+
+      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+        commandFile.run(ikaServer, client, message, args);
+      }
+      else {
+        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+          console.log(guildConf);
+          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+        }
+        else {
+          let ikaServer = guildConf.channelServers[message.channel.id];
+          commandFile.run(ikaServer, client, message, args);
+        }
+      }
+
+    }
+
+    if (command === "info") {
+
+      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+        commandFile.run(ikaServer, client, message, args);
+      }
+      else {
+        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+          console.log(guildConf);
+          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+        }
+        else {
+          let ikaServer = guildConf.channelServers[message.channel.id];
+          commandFile.run(ikaServer, client, message, args);
+        }
+      }
+
+    }
+
+    if (command === "growth") {
+
+      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+        commandFile.run(ikaServer, client, message, args);
+      }
+      else {
+        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+          console.log(guildConf);
+          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+        }
+        else {
+          let ikaServer = guildConf.channelServers[message.channel.id];
+          commandFile.run(ikaServer, client, message, args);
+        }
+      }
+
+    }
+
+    if (command === "island") {
+
+      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+        commandFile.run(ikaServer, client, message, args);
+      }
+      else {
+        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+          console.log(guildConf);
+          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+        }
+        else {
+          let ikaServer = guildConf.channelServers[message.channel.id];
+          commandFile.run(ikaServer, client, message, args);
+        }
+      }
+
     }
 
   } catch (err) {
+    message.channel.send(`\`${guildConf.prefix}${command}\` is not a command. To view all commands do \`!commands\``);
     if(err.code == 'MODULE_NOT_FOUND') {
       return;
     }
