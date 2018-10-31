@@ -4,12 +4,13 @@
   "description": "A Discord Bot for the game Ikariam, used on the Ikariam US Community Discord Server. https://discord.gg/KBhzWRe",
   "main": "app.js",
   "dependencies": {
+    "cryptiles": ">=4.1.2",
     "discord.js": "^11.4.2",
+    "enmap": "^4.3.3",
     "fs": "0.0.1-security",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-    "rss-feed-emitter": "^2.0.0",
-    "cryptiles": ">=4.1.2"
+    "rss-feed-emitter": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {
