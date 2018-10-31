@@ -3,7 +3,7 @@ const fs = require("fs");
 
 module.exports = {
 
-  getPlayerIds: function(msg, server, callback) {
+  getPlayerIds: function(message, server, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -16,7 +16,7 @@ module.exports = {
     });
   },
 
-  getPlayerInfo: function(msg, server, playerId, callback) {
+  getPlayerInfo: function(message, server, playerId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -30,7 +30,7 @@ module.exports = {
     });
   },
 
-  getIslandInfo: function(msg, server, islandId, callback) {
+  getIslandInfo: function(message, server, islandId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -44,7 +44,7 @@ module.exports = {
     });
   },
 
-  getScoresInfo: function(msg, server, playerId, scoreCategory, timeAmount, timeType, callback) {
+  getScoresInfo: function(message, server, playerId, scoreCategory, timeAmount, timeType, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -62,7 +62,7 @@ module.exports = {
     });
   },
 
-  getTr: function(msg, callback) {
+  getTr: function(message, callback) {
     request.post({
       url: 'http://ika-search.com/getSite.py',
       form: {
@@ -74,8 +74,8 @@ module.exports = {
     });
   },
 
-  verifyPlayerName: function(msg, server, args, callback) {
-    module.exports.getPlayerIds(msg, server, (playerArray) => {
+  verifyPlayerName: function(message, server, args, callback) {
+    module.exports.getPlayerIds(message, server, (playerArray) => {
       let player = playerArray.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
       if(player == null){
         callback(false);
@@ -86,7 +86,7 @@ module.exports = {
     });
   },
 
-  verifyIslandCoordAndGetId: function(msg, server, x_coord, y_coord, callback) {
+  verifyIslandCoordAndGetId: function(message, server, x_coord, y_coord, callback) {
     fs.readFile('./data/islands.json', 'UTF-8', (err, data) => {
       if (err) throw err;
       let json_data = JSON.parse(data);
