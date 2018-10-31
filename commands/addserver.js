@@ -27,17 +27,25 @@ exports.run = (guildConf, client, message, args) => {
   }
   else {
 
-    if (!servers.hasOwnProperty(args.toLowerCase())) {
-      message.channel.send(`The Ikariam server \`${args}\` does not exist. Here is a list of valid servers:\nAlpha, Beta, Ny, Omega, Apollon, Asklepios, Boreas, Charon, Demeter, Dionysos, Eirene`);
+    if (args.toLowerCase() === "warserver 03") {
+      guildConf.channelServers[message.channel.id] = "Warserver 03"
+
+      client.settings.set(message.guild.id, guildConf.channelServers, "channelServers");
+      message.channel.send(`The channel \`#${message.channel.name}\` now uses the \`Warserver 03\` Ikariam server for commands.`);
     }
 
     else {
-      guildConf.channelServers[message.channel.id] = servers[args];
+      if (!servers.hasOwnProperty(args.toLowerCase())) {
+        message.channel.send(`The Ikariam server \`${args}\` does not exist. Here is a list of valid servers:\nAlpha, Beta, Ny, Omega, Apollon, Asklepios, Boreas, Charon, Demeter, Dionysos, Eirene`);
+      }
+      else {
+        guildConf.channelServers[message.channel.id] = servers[args];
 
-      client.settings.set(message.guild.id, guildConf.channelServers, "channelServers");
-      message.channel.send(`The channel \`#${message.channel.name}\` now uses the \`${servers[args]}\` Ikariam server for commands.`);
-
+        client.settings.set(message.guild.id, guildConf.channelServers, "channelServers");
+        message.channel.send(`The channel \`#${message.channel.name}\` now uses the \`${servers[args]}\` Ikariam server for commands.`);
+      }
     }
+
   }
 
 }

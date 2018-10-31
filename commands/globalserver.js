@@ -28,14 +28,22 @@ exports.run = (guildConf, client, message, args) => {
     message.channel.send(`The server is now in \`CHANNEL\` mode. Use \`!addserver (Ikariam Server Name)\` in a channel to enable commands for that server.`);
   }
   else {
-    if (!servers.hasOwnProperty(args.toLowerCase())) {
-      message.channel.send(`The Ikariam server \`${args}\` does not exist. Here is a list of valid servers:\nAlpha, Beta, Ny, Omega, Apollon, Asklepios, Boreas, Charon, Demeter, Dionysos, Eirene`);
+    if (args.toLowerCase() === "warserver 03") {
+      guildConf.channelServers[message.channel.id] = "Warserver 03";
+
+      client.settings.set(message.guild.id, guildConf.channelServers, "channelServers");
+      message.channel.send(`The channel \`#${message.channel.name}\` now uses the \`Warserver 03\` Ikariam server for commands.`);
     }
     else {
-      client.settings.set(message.guild.id, "ALL", "commandMode");
-      client.settings.set(message.guild.id, servers[args], "commandModeAllServer");
-      client.settings.set(message.guild.id, {}, "channelServers");
-      message.channel.send(`The ikariam server \`${servers[args]}\` will now be used for commands in all channels.`);
+      if (!servers.hasOwnProperty(args.toLowerCase())) {
+        message.channel.send(`The Ikariam server \`${args}\` does not exist. Here is a list of valid servers:\nAlpha, Beta, Ny, Omega, Apollon, Asklepios, Boreas, Charon, Demeter, Dionysos, Eirene`);
+      }
+      else {
+        client.settings.set(message.guild.id, "ALL", "commandMode");
+        client.settings.set(message.guild.id, servers[args], "commandModeAllServer");
+        client.settings.set(message.guild.id, {}, "channelServers");
+        message.channel.send(`The ikariam server \`${servers[args]}\` will now be used for commands in all channels.`);
+      }
     }
   }
 }
