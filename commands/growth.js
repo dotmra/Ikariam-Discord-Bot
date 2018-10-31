@@ -1,4 +1,4 @@
-exports.run = (server, bot, msg, args) => {
+exports.run = (server, client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
   const fs = require("fs");
@@ -25,13 +25,13 @@ exports.run = (server, bot, msg, args) => {
     dateType = 'DAY';
   }
   else {
-    msg.channel.send(`Correct usage: !growth <PlayerName>, [Score Category], [Time in Days]\n*(Score Category and Time in Days is optional. Without <> and [], remember the commas*`);
+    message.channel.send(`Correct usage: !growth <PlayerName>, [Score Category], [Time in Days]\n*(Score Category and Time in Days is optional. Without <> and [], remember the commas*`);
   }
 
-  ika.verifyPlayerName(msg, server, playerName, (result) => {
+  ika.verifyPlayerName(message, server, playerName, (result) => {
 
     if(!result) {
-      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
+      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else {
 
@@ -56,13 +56,13 @@ exports.run = (server, bot, msg, args) => {
           scoreTypeItem = json_data.scoreType.find(item => item.alias4 == scoreTypeArgs.join(' ').toLowerCase());
         }
         if(!scoreTypeItem) {
-          msg.channel.send(`Could not find a score category with the name ${scoreTypeArgs.join(' ')}. Please try again.`);
+          message.channel.send(`Could not find a score category with the name ${scoreTypeArgs.join(' ')}. Please try again.`);
         }
         else {
           scoreType = scoreTypeItem.name;
           scoreTypeFriendly = scoreTypeItem.friendlyName;
 
-          ika.getScoresInfo(msg, server, result.id, scoreType, dateNum, dateType, (results) => {
+          ika.getScoresInfo(message, server, result.id, scoreType, dateNum, dateType, (results) => {
 
             let daysAmount1 = new Date(Date.parse(results[results.length - 1].d)).getTime() - new Date(Date.parse(results[0].d)).getTime();
             let daysAmount2 = Math.ceil(daysAmount1 / (1000 * 3600 * 24));
@@ -87,7 +87,7 @@ exports.run = (server, bot, msg, args) => {
               }
             }
 
-            ika.getPlayerInfo(msg, server, result.id, (playerObject) => {
+            ika.getPlayerInfo(message, server, result.id, (playerObject) => {
               if (playerObject.player.tag) {
                 message_embed.embed.author.name = `${result.pseudo} (${playerObject.player.tag})`;
               }
@@ -116,7 +116,7 @@ exports.run = (server, bot, msg, args) => {
                 let position = result.r;
               });
 
-              msg.channel.send(message_embed);
+              message.channel.send(message_embed);
 
             });
           });

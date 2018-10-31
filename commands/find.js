@@ -1,16 +1,16 @@
-exports.run = (server, bot, msg, args) => {
+exports.run = (server, client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
-  ika.verifyPlayerName(msg, server, args, (result) => {
+  ika.verifyPlayerName(message, server, args, (result) => {
     if(!result){
-      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
+      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else{
       let resource_emotes = ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>'];
       let wonder_emotes = ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'];
 
-      ika.getPlayerInfo(msg, server, result.id, (playerObject) => {
+      ika.getPlayerInfo(message, server, result.id, (playerObject) => {
 
         message_embed = {
           embed: {
@@ -50,7 +50,7 @@ exports.run = (server, bot, msg, args) => {
           message_embed.embed.fields[0].value += `\n**[${city.x}:${city.y}]** - ${city.name} (${city.level}) ${wonder_emotes[city.wonder_id]}${resource_emotes[city.resource_id]}`;
         });
 
-        msg.channel.send(message_embed);
+        message.channel.send(message_embed);
 
       });
     }

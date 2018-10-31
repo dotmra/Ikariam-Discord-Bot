@@ -1,4 +1,4 @@
-exports.run = (server, bot, msg, args) => {
+exports.run = (server, client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
@@ -11,15 +11,15 @@ exports.run = (server, bot, msg, args) => {
   let x_coord = island_coords[0];
   let y_coord = island_coords[1];
 
-  ika.verifyIslandCoordAndGetId(msg, server, x_coord, y_coord, (result) =>{
+  ika.verifyIslandCoordAndGetId(message, server, x_coord, y_coord, (result) =>{
     if(!result) {
-      msg.channel.send(`Could not find an island with the coordinations ${x_coord}:${y_coord}. Please try again.`);
+      message.channel.send(`Could not find an island with the coordinations ${x_coord}:${y_coord}. Please try again.`);
     }
     else {
       let resource_emotes = ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>'];
       let wonder_emotes = ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'];
 
-      ika.getIslandInfo(msg, server, result.id, (islandObject) => {
+      ika.getIslandInfo(message, server, result.id, (islandObject) => {
 
         message_embed = {
           embed: {
@@ -67,7 +67,7 @@ exports.run = (server, bot, msg, args) => {
         }
 
         message_embed.embed.author.name = `[${x_coord}:${y_coord}] ${islandObject.island.name}, ${islandObject.cities.length}/17, ${inactive_count} inactive`;
-        msg.channel.send(message_embed);
+        message.channel.send(message_embed);
 
       });
     }

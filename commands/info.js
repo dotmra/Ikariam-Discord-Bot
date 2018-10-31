@@ -1,4 +1,4 @@
-exports.run = (server, bot, msg, args) => {
+exports.run = (server, client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
@@ -6,12 +6,12 @@ exports.run = (server, bot, msg, args) => {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  ika.verifyPlayerName(msg, server, args, (result) => {
+  ika.verifyPlayerName(message, server, args, (result) => {
     if(!result){
-      msg.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
+      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
     }
     else{
-      ika.getPlayerInfo(msg, server, result.id, (playerObject) => {
+      ika.getPlayerInfo(message, server, result.id, (playerObject) => {
 
         player = playerObject.player;
 
@@ -78,7 +78,7 @@ exports.run = (server, bot, msg, args) => {
           message_embed.embed.fields[0].name += ' <:inactive:506517055466635284>';
         }
 
-        msg.channel.send(message_embed);
+        message.channel.send(message_embed);
 
       });
     }
