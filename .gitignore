@@ -1,5 +1,4 @@
 config.json
-commands/test1.js
-commands/test2.js
 node_modules/
-commands/beast.js
+README.md
+.gitignore
