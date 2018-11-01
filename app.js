@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const RssFeedEmitter = require('rss-feed-emitter');
 const Enmap = require("enmap");
 const client = new Discord.Client();
 
