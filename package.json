@@ -10,8 +10,7 @@
     "enmap": "^4.3.3",
     "fs": "0.0.1-security",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.5",
-    "rss-feed-emitter": "^2.0.0"
+    "request-promise-native": "^1.0.5"
   },
   "devDependencies": {},
   "scripts": {
