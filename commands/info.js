@@ -22,7 +22,7 @@ exports.run = (client, message, args) => {
     }
   }
   else {
-    if (!client.settings.get(message.guild.id, "channelServers"),hasOwnProperty(message.channel.id)) {
+    if (!client.settings.get(message.guild.id, "channelServers").hasOwnProperty(message.channel.id)) {
       return message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use in this channel.").catch((err) => {
         if(err != "DiscordAPIError: Missing Permissions"){
           return console.error(err);
@@ -37,7 +37,7 @@ exports.run = (client, message, args) => {
 
   ika.verifyPlayerName(ikaServer, args, (result) => {
     if(!result){
-      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`).catch((err) => {
+      message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`).catch((err) => {
         if(err != "DiscordAPIError: Missing Permissions"){
           return console.error(err);
         }
