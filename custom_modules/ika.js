@@ -3,48 +3,48 @@ const fs = require("fs");
 
 module.exports = {
 
-  getPlayerIds: function(message, server, callback) {
+  getPlayerIds: function(ikaServer, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "autocompleteList",
         iso: "us",
-        server: server
+        server: ikaServer
       }
     }, (error, response, body) => {
       callback(JSON.parse(body).player);
     });
   },
 
-  getPlayerInfo: function(message, server, playerId, callback) {
+  getPlayerInfo: function(ikaServer, playerId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "playerInfo",
         iso: "us",
         playerId: playerId,
-        server: server
+        server: ikaServer
       }
     }, (error, response, body) => {
       callback(JSON.parse(body));
     });
   },
 
-  getIslandInfo: function(message, server, islandId, callback) {
+  getIslandInfo: function(ikaServer, islandId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "islandCities",
         iso: "us",
         islandId: islandId,
-        server: server
+        server: ikaServer
       }
     }, (error, response, body) => {
       callback(JSON.parse(body));
     });
   },
 
-  getScoresInfo: function(message, server, playerId, scoreCategory, timeAmount, timeType, callback) {
+  getScoresInfo: function(ikaServer, playerId, scoreCategory, timeAmount, timeType, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -54,7 +54,7 @@ module.exports = {
         index: playerId,
         iso: "us",
         scoreType: scoreCategory,
-        server: server,
+        server: ikaServer,
         type: "player"
       }
     }, (error, response, body) => {
@@ -74,8 +74,8 @@ module.exports = {
     });
   },
 
-  verifyPlayerName: function(message, server, args, callback) {
-    module.exports.getPlayerIds(message, server, (playerArray) => {
+  verifyPlayerName: function(ikaServer, args, callback) {
+    module.exports.getPlayerIds(ikaServer, (playerArray) => {
       let player = playerArray.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
       if(player == null){
         callback(false);
@@ -86,7 +86,7 @@ module.exports = {
     });
   },
 
-  verifyIslandCoordAndGetId: function(message, server, x_coord, y_coord, callback) {
+  verifyIslandCoordAndGetId: function(ikaServer, x_coord, y_coord, callback) {
     fs.readFile('./data/islands.json', 'UTF-8', (err, data) => {
       if (err) throw err;
       let json_data = JSON.parse(data);
