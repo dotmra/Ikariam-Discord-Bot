@@ -3,9 +3,8 @@ const fs = require('fs');
 const RssFeedEmitter = require('rss-feed-emitter');
 const Enmap = require("enmap");
 const client = new Discord.Client();
-const config = require('./config.json');
-const prefix = config.prefix;
 
+client.config = require('./config.json');
 client.settings = new Enmap({
   name: "settings",
   fetchAll: false,
@@ -30,4 +29,4 @@ client.on('guildDelete', (guild) => require('./events/guildDelete.js')(client, g
 client.on('guildCreate', (guild) => require('./events/guildCreate.js')(client, guild));
 client.on('message', (message) => require('./events/message.js')(client, message, defaultSettings));
 
-client.login(config.token);
+client.login(client.config.token);
