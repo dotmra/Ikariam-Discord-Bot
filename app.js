@@ -52,7 +52,6 @@ client.on("guildCreate", guild => {
     + `\nIf you wish to use different Ikariam servers on different channels, you can use the Channel mode.`
     + `\nTo use the Channel mode, first do \`!globalserver off\`, then \`!addserver <Ikariam Server Name>\` in the text channels you want to use for that Ikariam Server. You will have to issue this command in all the text channels you want commands to work, but this allows the bot to work with different Ikariam Servers on the same Discord Server.`
     + `\n\nGo ahead and try, if you have problems setting up the bot, run into issues or have any suggestions, please do not hesitate to contact my owner 7marre#7777 on Discord.`
-
   );
 });
 
@@ -101,8 +100,23 @@ client.on('message', async (message) => {
     let commandFile = require(`./commands/${command}.js`);
 
     if (command === "commands") {
-      commandFile.run(message, args);
-      console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        commandFile.run(message, args);
+        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+      }
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
     /*if (command === "setconf") {
@@ -114,101 +128,198 @@ client.on('message', async (message) => {
     }*/
 
     if (command === "addserver") {
-      commandFile.run(guildConf, client, message, args);
-      console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        commandFile.run(guildConf, client, message, args);
+        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+      }
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
     if (command === "globalserver") {
-      commandFile.run(guildConf, client, message, args);
-      console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        commandFile.run(guildConf, client, message, args);
+        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+      }
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
     if (command === "find") {
-
-      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
-        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
-        commandFile.run(ikaServer, client, message, args);
-        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
-      }
-      else {
-        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
-          console.log(guildConf);
-          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
-        }
-        else {
-          let ikaServer = guildConf.channelServers[message.channel.id];
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+          let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
           commandFile.run(ikaServer, client, message, args);
           console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
         }
+        else {
+          if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+            console.log(guildConf);
+            message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+          }
+          else {
+            let ikaServer = guildConf.channelServers[message.channel.id];
+            commandFile.run(ikaServer, client, message, args);
+            console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+          }
+        }
       }
-
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
     if (command === "info") {
-
-      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
-        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
-        commandFile.run(ikaServer, client, message, args);
-        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
-      }
-      else {
-        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
-          console.log(guildConf);
-          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
-        }
-        else {
-          let ikaServer = guildConf.channelServers[message.channel.id];
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+          let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
           commandFile.run(ikaServer, client, message, args);
           console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
         }
+        else {
+          if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+            console.log(guildConf);
+            message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+          }
+          else {
+            let ikaServer = guildConf.channelServers[message.channel.id];
+            commandFile.run(ikaServer, client, message, args);
+            console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+          }
+        }
       }
-
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
     if (command === "growth") {
-
-      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
-        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
-        commandFile.run(ikaServer, client, message, args);
-        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
-      }
-      else {
-        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
-          console.log(guildConf);
-          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
-        }
-        else {
-          let ikaServer = guildConf.channelServers[message.channel.id];
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+          let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
           commandFile.run(ikaServer, client, message, args);
           console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
         }
+        else {
+          if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+            console.log(guildConf);
+            message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+          }
+          else {
+            let ikaServer = guildConf.channelServers[message.channel.id];
+            commandFile.run(ikaServer, client, message, args);
+            console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+          }
+        }
       }
-
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
     if (command === "island") {
-
-      if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
-        let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
-        commandFile.run(ikaServer, client, message, args);
-        console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
-      }
-      else {
-        if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
-          console.log(guildConf);
-          message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
-        }
-        else {
-          let ikaServer = guildConf.channelServers[message.channel.id];
+      if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+        if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+          let ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
           commandFile.run(ikaServer, client, message, args);
           console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
         }
+        else {
+          if (!guildConf.channelServers.hasOwnProperty(message.channel.id)) {
+            console.log(guildConf);
+            message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver (Ikariam Server Name)\` to assign an Ikariam server for the bot to use in this channel.");
+          }
+          else {
+            let ikaServer = guildConf.channelServers[message.channel.id];
+            commandFile.run(ikaServer, client, message, args);
+            console.log(`${message.author.tag} issued command !${command} ${args.join(' ')} in server: ${message.guild.name} (${message.guild.id})`);
+          }
+        }
       }
-
+      else {
+        message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+          + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+          + `tell the Discord server admin and have them check my permissions.`)
+        .catch(function(err) {
+          if(err != "DiscordAPIError: Cannot send messages to this user"){
+            console.log(err);
+          }
+          else {
+            console.log(`Unable to send DM to #${message.author.tag}.`);
+          }
+        });
+      }
     }
 
   } catch (err) {
-    message.channel.send(`\`${guildConf.prefix}${command}\` is not a command. To view all commands do \`!commands\``);
+    if (message.guild.me.hasPermission('ADMINISTRATOR')) {
+      message.channel.send(`\`${guildConf.prefix}${command}\` is not a command. To view all commands do \`!commands\``);
+    }
+    else {
+      message.author.send(`Hey, I do not have permission to talk in \`#${message.channel.name}\``
+        + `so I cannot reply to your command \`!${command}\`. If you believe I should have permission to talk in \`#${message.channel.name}\`,`
+        + `tell the Discord server admin and have them check my permissions.`)
+      .catch(function(err) {
+        if(err != "DiscordAPIError: Cannot send messages to this user"){
+          console.log(err);
+        }
+        else {
+          console.log(`Unable to send DM to #${message.author.tag}.`);
+        }
+      });
+    }
     if(err.code == 'MODULE_NOT_FOUND') {
       return;
     }
