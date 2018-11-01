@@ -1,4 +1,4 @@
-exports.run = (message, args) => {
+exports.run = (client, message, args) => {
 
   message_embed = {
     embed: {
@@ -12,6 +12,13 @@ exports.run = (message, args) => {
           + "\n**!island**  <XX:YY>"
           + "\n**!growth** <Player Name>"
           + "\n**!growth** <Player Name>, <Score Category>, <Duration In Days>"
+          + "\n"
+        },
+        {
+          name: "Admin commands",
+          value: ""
+          + "\n**!globalserver** <off/Ikariam Server Name>"
+          + "\n**!addserver** <Ikariam Server Name>"
         }
       ]
     }
