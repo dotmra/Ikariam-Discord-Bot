@@ -1,4 +1,4 @@
-exports.run = (server, client, message, args) => {
+exports.run = (client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
@@ -6,12 +6,46 @@ exports.run = (server, client, message, args) => {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  ika.verifyPlayerName(message, server, args, (result) => {
+  let ikaServer = "";
+
+  if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+    if (client.settings.get(message.guild.id, "commandModeAllServer").length != 0) {
+      ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+    }
+    else {
+      return message.channel.send("This server does not have an Ikariam server assigned. Use \`!globalserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use or \`!globalserver off\` to turn off global server.").catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
+    }
+  }
+  else {
+    if (!client.settings.get(message.guild.id, "channelServers"),hasOwnProperty(message.channel.id)) {
+      return message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use in this channel.").catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
+    }
+    else {
+      ikaServer = client.settings.get(message.guild.id, "channelServers")[message.channel.id];
+    }
+  }
+
+  ika.verifyPlayerName(ikaServer, args, (result) => {
     if(!result){
-      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
+      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`).catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
     }
     else{
-      ika.getPlayerInfo(message, server, result.id, (playerObject) => {
+      ika.getPlayerInfo(ikaServer, result.id, (playerObject) => {
 
         player = playerObject.player;
 
@@ -55,30 +89,12 @@ exports.run = (server, client, message, args) => {
           message_embed.embed.author.name = `${result.pseudo}`;
         }
 
-        if(player.id == 890) {
-          message_embed.embed.author.name += ' aka the Best Player';
-        }
-
-        if(player.id == 599) {
-          message_embed.embed.author.name += ' aka the Bully';
-        }
-
-        if(player.id == 4804) {
-          message_embed.embed.author.name += ' aka the Beast';
-        }
-
-        if(player.id == 458) {
-          message_embed.embed.author.name += ' aka the Sleepless Pirate';
-        }
-
-        if(player.state == 1){
-          message_embed.embed.fields[0].name += ' <:vacation:506517055701385218>';
-        }
-        if(player.state == 2){
-          message_embed.embed.fields[0].name += ' <:inactive:506517055466635284>';
-        }
-
-        message.channel.send(message_embed);
+        message.channel.send(message_embed).catch((err) => {
+          if(err != "DiscordAPIError: Missing Permissions"){
+            return console.error(err);
+          }
+          return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+        });
 
       });
     }

@@ -1,16 +1,50 @@
-exports.run = (server, client, message, args) => {
+exports.run = (client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
-  ika.verifyPlayerName(message, server, args, (result) => {
+  let ikaServer = "";
+
+  if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+    if (client.settings.get(message.guild.id, "commandModeAllServer").length != 0) {
+      ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+    }
+    else {
+      return message.channel.send("This server does not have an Ikariam server assigned. Use \`!globalserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use or \`!globalserver off\` to turn off global server.").catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
+    }
+  }
+  else {
+    if (!client.settings.get(message.guild.id, "channelServers"),hasOwnProperty(message.channel.id)) {
+      return message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use in this channel.").catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
+    }
+    else {
+      ikaServer = client.settings.get(message.guild.id, "channelServers")[message.channel.id];
+    }
+  }
+
+  ika.verifyPlayerName(ikaServer, args, (result) => {
     if(!result){
-      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`);
+      message.channel.send(`Could not find a player with the name ${args.join(' ')}. Please try again.`).catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
     }
     else{
       let resource_emotes = ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>'];
       let wonder_emotes = ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'];
 
-      ika.getPlayerInfo(message, server, result.id, (playerObject) => {
+      ika.getPlayerInfo(ikaServer, result.id, (playerObject) => {
 
         message_embed = {
           embed: {
@@ -50,7 +84,12 @@ exports.run = (server, client, message, args) => {
           message_embed.embed.fields[0].value += `\n**[${city.x}:${city.y}]** - ${city.name} (${city.level}) ${wonder_emotes[city.wonder_id]}${resource_emotes[city.resource_id]}`;
         });
 
-        message.channel.send(message_embed);
+        message.channel.send(message_embed).catch((err) => {
+          if(err != "DiscordAPIError: Missing Permissions"){
+            return console.error(err);
+          }
+          return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+        });
 
       });
     }

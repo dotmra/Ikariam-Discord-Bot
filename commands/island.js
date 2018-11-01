@@ -1,4 +1,4 @@
-exports.run = (server, client, message, args) => {
+exports.run = (client, message, args) => {
 
   const ika = require('../custom_modules/ika.js');
 
@@ -6,20 +6,54 @@ exports.run = (server, client, message, args) => {
     return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+  let ikaServer = "";
+
+  if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
+    if (client.settings.get(message.guild.id, "commandModeAllServer").length != 0) {
+      ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+    }
+    else {
+      return message.channel.send("This server does not have an Ikariam server assigned. Use \`!globalserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use or \`!globalserver off\` to turn off global server.").catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
+    }
+  }
+  else {
+    if (!client.settings.get(message.guild.id, "channelServers"),hasOwnProperty(message.channel.id)) {
+      return message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use in this channel.").catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
+    }
+    else {
+      ikaServer = client.settings.get(message.guild.id, "channelServers")[message.channel.id];
+    }
+  }
+
   let island_coords = args[0].split(":");
 
   let x_coord = island_coords[0];
   let y_coord = island_coords[1];
 
-  ika.verifyIslandCoordAndGetId(message, server, x_coord, y_coord, (result) =>{
+  ika.verifyIslandCoordAndGetId(ikaServer, x_coord, y_coord, (result) =>{
     if(!result) {
-      message.channel.send(`Could not find an island with the coordinations ${x_coord}:${y_coord}. Please try again.`);
+      message.channel.send(`Could not find an island with the coordinations ${x_coord}:${y_coord}. Please try again.`).catch((err) => {
+        if(err != "DiscordAPIError: Missing Permissions"){
+          return console.error(err);
+        }
+        return console.log(`Command !island: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+      });
     }
     else {
       let resource_emotes = ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>'];
       let wonder_emotes = ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'];
 
-      ika.getIslandInfo(message, server, result.id, (islandObject) => {
+      ika.getIslandInfo(ikaServer, result.id, (islandObject) => {
 
         message_embed = {
           embed: {
@@ -67,7 +101,12 @@ exports.run = (server, client, message, args) => {
         }
 
         message_embed.embed.author.name = `[${x_coord}:${y_coord}] ${islandObject.island.name}, ${islandObject.cities.length}/17, ${inactive_count} inactive`;
-        message.channel.send(message_embed);
+        message.channel.send(message_embed).catch((err) => {
+          if(err != "DiscordAPIError: Missing Permissions"){
+            return console.error(err);
+          }
+          return console.log(`Command !island: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+        });
 
       });
     }

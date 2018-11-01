@@ -21,7 +21,7 @@ exports.run = (message, args) => {
     if(err != "DiscordAPIError: Missing Permissions"){
       return console.error(err);
     }
-    return console.log(`No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+    return console.log(`Command !commands: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
   });
 
 }
