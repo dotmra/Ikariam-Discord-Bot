@@ -24,6 +24,11 @@ module.exports = (client, message, defaultSettings) => {
       console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
+    if (command === "setnewschannel") {
+      commandFile.run(guildConf, client, message, args);
+      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+    }
+
     if (command === "addserver") {
       commandFile.run(guildConf, client, message, args);
       console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
