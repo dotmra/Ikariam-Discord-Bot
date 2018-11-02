@@ -52,10 +52,10 @@ exports.run = (guildConf, client, message, args) => {
       });
     }
     else {
-      guildConf.channelServers[message.channel.id] = servers[args];
+      guildConf.channelServers[message.channel.id] = servers[args.toLowerCase()];
 
       client.settings.set(message.guild.id, guildConf.channelServers, "channelServers");
-      message.channel.send(`The channel \`#${message.channel.name}\` now uses the \`${servers[args]}\` Ikariam server for commands.`).catch((err) => {
+      message.channel.send(`The channel \`#${message.channel.name}\` now uses the \`${servers[args.toLowerCase()]}\` Ikariam server for commands.`).catch((err) => {
         if(err != "DiscordAPIError: Missing Permissions"){
           return console.error(err);
         }

@@ -54,9 +54,9 @@ exports.run = (guildConf, client, message, args) => {
     }
     else {
       client.settings.set(message.guild.id, "ALL", "commandMode");
-      client.settings.set(message.guild.id, servers[args], "commandModeAllServer");
+      client.settings.set(message.guild.id, servers[args.toLowerCase()], "commandModeAllServer");
       client.settings.set(message.guild.id, {}, "channelServers");
-      message.channel.send(`The ikariam server \`${servers[args]}\` will now be used for commands in all channels.`).catch((err) => {
+      message.channel.send(`The ikariam server \`${servers[args.toLowerCase()]}\` will now be used for commands in all channels.`).catch((err) => {
         if(err != "DiscordAPIError: Missing Permissions"){
           return console.error(err);
         }
