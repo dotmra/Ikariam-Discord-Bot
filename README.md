@@ -20,3 +20,10 @@ https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
 
 - !info (Player Name)
 -- Shows a players score and ranking in all score categories, also indicates if the player is inactive or in vacation mode
+
+## Planned features:
+- Automatically post game news from forums in a desired text channel
+
+- Set your own command prefix
+
+- Come with suggestions, everything is considered!
