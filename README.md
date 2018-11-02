@@ -21,9 +21,20 @@ https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
 - !info (Player Name)
 -- Shows a players score and ranking in all score categories, also indicates if the player is inactive or in vacation mode
 
+### Admin Commands (requires Admin role):
+- !globalserver (off / Ikariam Server Name)
+-- Sets the Ikariam server to be used for all channels. If you turn this off you can use !addserver.
+
+- !addserver (Ikariam Server Name)
+-- Use this in each channel you want commands to work, this allows for different ikariam servers in different channels.
+  
+- !setnewschannel
+-- Use this command in desired channel where you want the bot to automatically post Game News from Boards.
+
 ## Planned features:
-- Automatically post game news from forums in a desired text channel
 
 - Set your own command prefix
+
+- Configurable name of 'Admin' role
 
 - Come with suggestions, everything is considered!
