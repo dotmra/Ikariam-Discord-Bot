@@ -35,6 +35,4 @@ https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
 
 - Set your own command prefix
 
-- Configurable name of 'Admin' role
-
 - Come with suggestions, everything is considered!
