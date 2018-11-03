@@ -4,7 +4,6 @@ module.exports = (client, guild) => {
   let filteredChannels = guild.channels.filter(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'));
 
   if (filteredChannels) {
-    // Sort channels by position, this should be the order they were created in?? (it's not their actual position) So that it most likely sends to the "Welcome" channel.
     let sortedChannels = filteredChannels.sort((chan1, chan2) => {return chan1.position < chan2.position ? -1 : 1});
     sortedChannels.first().send(`Hello, I'm a bot. Thanks for inviting me, commands: \`!commands\`\nFor help on setting me up: <https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server>`).catch((err) => {
       if(err != "DiscordAPIError: Missing Permissions" && err != "DiscordAPIError: Cannot send messages to this user"){
@@ -14,6 +13,7 @@ module.exports = (client, guild) => {
     });
     return console.log(`Successfully sent guildCreate message in guild '${guild.name}' in channel '#${sortedChannels.first().name}'`);
   }
+
   else {
     return console.log(`Failed to send guildCreate message in guild '${guild.name}' (${guild.id}) (Missing SEND_MESSAGES permission in all channels)`);
     guild.owner.send(`Hey, I did not have permission (SEND_MESSAGES) to send a message in any channel to the server ${guild.name} upon joining. Please fix this.\nFor help on setting me up correctly: <https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server>`).catch((err) => {
@@ -25,11 +25,3 @@ module.exports = (client, guild) => {
   }
 
 }
-
-/*guild.channels.sort(function(chan1, chan2){
-  if(chan1.type!==`text`) return -1;
-  if(!chan1.permissionsFor(guild.me).has(`SEND_MESSAGES`)) return -1;
-  return chan1.position < chan2.position ? -1 : 1;
-}).first()*/
-
-//const defaultChannel = guild.channels.find(channel => channel.permissionsFor(guild.me).has("SEND_MESSAGES") && channel.type == 'text');
