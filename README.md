@@ -21,7 +21,7 @@ https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
 - !info (Player Name)
 -- Shows a players score and ranking in all score categories, also indicates if the player is inactive or in vacation mode
 
-### Admin Commands (requires Admin role):
+### Admin Commands (must be an Administrator):
 - !globalserver (off / Ikariam Server Name)
 -- Sets the Ikariam server to be used for all channels. If you turn this off you can use !addserver.
 
