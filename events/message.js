@@ -21,42 +21,42 @@ module.exports = (client, message, defaultSettings) => {
 
     if (command === "commands") {
       commandFile.run(client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "setnewschannel") {
-      commandFile.run(guildConf, client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      commandFile.run(client, message, args);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "addserver") {
       commandFile.run(guildConf, client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "globalserver") {
       commandFile.run(client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "find") {
       commandFile.run(client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "info") {
       commandFile.run(client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "growth") {
       commandFile.run(client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
     if (command === "island") {
       commandFile.run(client, message, args);
-      console.log(`${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
   } catch (err) {
