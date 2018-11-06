@@ -33,7 +33,6 @@ module.exports = (client, defaultSettings) => {
         let description = element.children[5].children[0].children[0].data;
 
         message_embed = {
-          content: '@everyone',
           embed: {
             color: 3447003,
             author: {
