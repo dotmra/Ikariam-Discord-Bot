@@ -49,6 +49,15 @@ exports.run = (client, message, args) => {
 
         player = playerObject.player;
 
+        if (!player.trader_score_secondary) {
+          return message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the scores.`).catch((err) => {
+            if(err != "DiscordAPIError: Missing Permissions"){
+              return console.error(err);
+            }
+            return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+          });
+        }
+
         message_embed = {
           embed: {
             color: 3447003,
