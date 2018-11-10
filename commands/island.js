@@ -1,18 +1,12 @@
-exports.run = (client, message, args) => {
+const ika = require('../custom_modules/ika.js');
 
-  const ika = require('../custom_modules/ika.js');
+exports.run = (client, message, args, defaultSettings) => {
 
-  Number.prototype.format = function () {
-    return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  const guildConf = client.settings.ensure(message.guild.id, defaultSettings);
 
-  let ikaServer = "";
+  ika.getGuildServer(guildConf, message, (ikaServer) => {
 
-  if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
-    if (client.settings.get(message.guild.id, "commandModeAllServer").length != 0) {
-      ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
-    }
-    else {
+    if (!ikaServer) {
       return message.channel.send("This server does not have an Ikariam server assigned. Use \`!globalserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use or \`!globalserver off\` to turn off global server.").catch((err) => {
         if(err != "DiscordAPIError: Missing Permissions"){
           return console.error(err);
@@ -20,95 +14,79 @@ exports.run = (client, message, args) => {
         return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
       });
     }
-  }
-  else {
-    if (!client.settings.get(message.guild.id, "channelServers").hasOwnProperty(message.channel.id)) {
-      return message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use in this channel.").catch((err) => {
-        if(err != "DiscordAPIError: Missing Permissions"){
-          return console.error(err);
-        }
-        return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-      });
-    }
+
     else {
-      ikaServer = client.settings.get(message.guild.id, "channelServers")[message.channel.id];
-    }
-  }
+      let island_coords = args[0].split(":");
+      let x_coord = island_coords[0];
+      let y_coord = island_coords[1];
 
-  let island_coords = args[0].split(":");
+      ika.verifyIslandCoordAndGetId(ikaServer, x_coord, y_coord, (result) => {
 
-  let x_coord = island_coords[0];
-  let y_coord = island_coords[1];
-
-  ika.verifyIslandCoordAndGetId(ikaServer, x_coord, y_coord, (result) =>{
-    if(!result) {
-      message.channel.send(`Could not find an island with the coordinations \`${x_coord}:${y_coord}\`. Please try again.`).catch((err) => {
-        if(err != "DiscordAPIError: Missing Permissions"){
-          return console.error(err);
-        }
-        return console.log(`Command !island: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-      });
-    }
-    else {
-      let resource_emotes = ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>'];
-      let wonder_emotes = ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'];
-
-      ika.getIslandInfo(ikaServer, result.id, (islandObject) => {
-
-        message_embed = {
-          embed: {
-            color: 3447003,
-            author: {
-              name: '',
-              icon_url: 'https://i.imgur.com/BwU5cbG.png'
-            },
-            fields: [{
-                name: `**Island information:** ${wonder_emotes[islandObject.island.wonder_id]}${resource_emotes[islandObject.island.resource_id]}`,
-                value: ''
-              }
-            ],
-            footer: {
-              icon_url: 'https://i.imgur.com/MBLT0wt.png',
-              text: 'ika-search.com'
+        if(!result) {
+          message.channel.send(`Could not find an island with the coordinations \`${x_coord}:${y_coord}\`. Please try again.`).catch((err) => {
+            if(err != "DiscordAPIError: Missing Permissions"){
+              return console.error(err);
             }
-          }
-        }
-
-        let inactive_count = 0;
-
-        if (islandObject.cities.length == 0) {
-          message_embed.embed.fields[0].value += "No towns on this island."
-        }
-        else {
-          islandObject.cities.forEach((city) => {
-            if(city.tag) {
-              message_embed.embed.fields[0].value += `\n**${city.pseudo}**(${city.tag}) **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
-            }
-            else {
-              message_embed.embed.fields[0].value += `\n**${city.pseudo}** **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
-            }
-
-            if(city.state == 2) {inactive_count++;}
-
-            // Discord form body can not be over 1024 chars and adding this will exceed that limit on many islands making the bot not send a message.
-            /*if(city.state == 1){
-              message_embed.embed.fields[0].value += ' <:vacation:421152426427416578>';
-            }
-            if(city.state == 2){
-              message_embed.embed.fields[0].value += ' <:inactive:476253259275960320>';
-            }*/
+            return console.log(`Command !island: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
           });
         }
 
-        message_embed.embed.author.name = `[${x_coord}:${y_coord}] ${islandObject.island.name}, ${islandObject.cities.length}/17, ${inactive_count} inactive`;
-        message.channel.send(message_embed).catch((err) => {
-          if(err != "DiscordAPIError: Missing Permissions"){
-            return console.error(err);
-          }
-          return console.log(`Command !island: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-        });
+        else {
+          ika.getIslandInfo(ikaServer, result.id, (islandObject) => {
 
+            message_embed = {
+              embed: {
+                title: `**Island information:**`
+                + `\nLvl ${islandObject.island.wonder_level} ${ika.wonder_emotes[islandObject.island.wonder_id]} Lvl ${islandObject.island.resource_level} ${ika.resource_emotes[islandObject.island.resource_id]} Lvl ${islandObject.island.wood_level} ${ika.resource_emotes[5]}`,
+                color: 3447003,
+                author: {
+                  name: '',
+                  icon_url: 'https://i.imgur.com/BwU5cbG.png'
+                },
+                description: '',
+                footer: {
+                  icon_url: 'https://i.imgur.com/MBLT0wt.png',
+                  text: 'ika-search.com'
+                }
+              }
+            }
+
+            let inactive_count = 0;
+
+            if (islandObject.cities.length == 0) {
+              message_embed.embed.description += "No towns on this island.";
+            }
+
+            else {
+              islandObject.cities.forEach((city) => {
+                if(city.tag) {
+                  message_embed.embed.description += `\n**${city.pseudo}**(${city.tag}) **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
+                }
+                else {
+                  message_embed.embed.description += `\n**${city.pseudo}** **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
+                }
+                if(city.state == 1){
+                  message_embed.embed.description += ' <:vacation:421152426427416578>';
+                }
+                if(city.state == 2){
+                  message_embed.embed.description += ' <:inactive:476253259275960320>';
+                  inactive_count++;
+                }
+              });
+            }
+
+            message_embed.embed.author.name = `[${x_coord}:${y_coord}] ${islandObject.island.name}, ${islandObject.cities.length}/17, ${inactive_count} inactive`;
+            message.channel.send(message_embed).catch((err) => {
+              if(err != "DiscordAPIError: Missing Permissions"){
+                return console.error(err);
+              }
+              return console.log(`Command !island: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+            });
+
+          });
+        }
       });
+
     }
   });
 
