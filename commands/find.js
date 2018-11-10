@@ -80,13 +80,22 @@ exports.run = (client, message, args) => {
           message_embed.embed.fields[0].name += ' <:inactive:506517055466635284>';
         }
 
+        if (playerObject.cities.length == 0) {
+          return message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the town locations.`).catch((err) => {
+            if(err != "DiscordAPIError: Missing Permissions"){
+              console.error(err);
+            }
+            console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+          });
+        }
+
         playerObject.cities.forEach((city) => {
           message_embed.embed.fields[0].value += `\n**[${city.x}:${city.y}]** - ${city.name} (${city.level}) ${wonder_emotes[city.wonder_id]}${resource_emotes[city.resource_id]}`;
         });
 
-        message.channel.send(message_embed).catch((err) => {
+        return message.channel.send(message_embed).catch((err) => {
           if(err != "DiscordAPIError: Missing Permissions"){
-            return console.error(err);
+            console.error(err);
           }
           return console.log(`Command !find: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
         });
