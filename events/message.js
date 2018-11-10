@@ -19,6 +19,11 @@ module.exports = (client, message, defaultSettings) => {
       commandFile.run(guildConf, client, message, args);
     }*/
 
+    if (command === "test") {
+      commandFile.run(client, message, args);
+      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+    }
+
     if (command === "commands") {
       commandFile.run(client, message, args);
       console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
@@ -55,7 +60,7 @@ module.exports = (client, message, defaultSettings) => {
     }
 
     if (command === "island") {
-      commandFile.run(client, message, args);
+      commandFile.run(client, message, args, defaultSettings);
       console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
