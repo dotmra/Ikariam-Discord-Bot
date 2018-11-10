@@ -1,7 +1,23 @@
 const request = require('request-promise-native');
 const fs = require("fs");
 
+Number.prototype.format = function () {
+  return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 module.exports = {
+
+  resource_emotes: ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>', '<:wood:506517055550259220>'],
+  wonder_emotes: ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'],
+
+  getGuildServer: function(guildConf, message, callback) {
+    if (guildConf.commandMode === "ALL") {
+      callback(guildConf.commandModeAllServer.length != 0 ? guildConf.commandModeAllServer : null);
+    }
+    else {
+      callback(guildConf.channelServers.hasOwnProperty(message.channel.id) ? guildConf.channelServers[message.channel.id] : null);
+    }
+  },
 
   getPlayerIds: function(ikaServer, callback) {
     request.post({
