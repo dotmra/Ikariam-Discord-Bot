@@ -1,73 +1,48 @@
-exports.run = (client, message, args) => {
+const ika = require('../custom_modules/ika.js');
+const errorHandler = require('../custom_modules/error_handler.js');
 
-  const ika = require('../custom_modules/ika.js');
+exports.run = (client, message, args, guildConf) => {
 
-  Number.prototype.format = function () {
-    return this.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  ika.getGuildServer(guildConf, message, (mode, ikaServer) => {
 
-  let ikaServer = "";
+    let region = client.settings.get(message.guild.id, 'botRegion');
 
-  if (client.settings.get(message.guild.id, "commandMode") === "ALL") {
-    if (client.settings.get(message.guild.id, "commandModeAllServer").length != 0) {
-      ikaServer = client.settings.get(message.guild.id, "commandModeAllServer");
+    if (!ikaServer) {
+      if (mode == 'server') {
+        return message.channel.send(`You have not yet assigned an Ikariam world to use. Use \`!ikariamworld\` to choose a world to use.`)
+          .catch((err) => { return errorHandler.discordMessageError(message, err) });
+      }
+      else {
+        return message.channel.send(`You have not yet assigned an Ikariam world to use in this channel. Use \`!ikariamworld\` to choose a world to use.`)
+          .catch((err) => { return errorHandler.discordMessageError(message, err) });
+      }
     }
+
     else {
-      return message.channel.send("This server does not have an Ikariam server assigned. Use \`!globalserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use or \`!globalserver off\` to turn off global server.").catch((err) => {
-        if(err != "DiscordAPIError: Missing Permissions"){
-          return console.error(err);
+      ika.verifyPlayerName(region, ikaServer, args, (result) => {
+        if(!result){
+          message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`)
+            .catch((err) => { return errorHandler.discordMessageError(message, err) });
         }
-        return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-      });
-    }
-  }
-  else {
-    if (!client.settings.get(message.guild.id, "channelServers").hasOwnProperty(message.channel.id)) {
-      return message.channel.send("This channel does not have an Ikariam server assigned. Use \`!addserver <Ikariam Server Name>\` to assign an Ikariam server for the bot to use in this channel.").catch((err) => {
-        if(err != "DiscordAPIError: Missing Permissions"){
-          return console.error(err);
-        }
-        return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-      });
-    }
-    else {
-      ikaServer = client.settings.get(message.guild.id, "channelServers")[message.channel.id];
-    }
-  }
+        else{
+          ika.getPlayerInfo(region, ikaServer, result.id, (playerObject) => {
 
-  ika.verifyPlayerName(ikaServer, args, (result) => {
-    if(!result){
-      message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`).catch((err) => {
-        if(err != "DiscordAPIError: Missing Permissions"){
-          return console.error(err);
-        }
-        return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-      });
-    }
-    else{
-      ika.getPlayerInfo(ikaServer, result.id, (playerObject) => {
+            player = playerObject.player;
 
-        player = playerObject.player;
-
-        if (!player.trader_score_secondary) {
-          return message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the scores.`).catch((err) => {
-            if(err != "DiscordAPIError: Missing Permissions"){
-              return console.error(err);
+            if (!player.trader_score_secondary) {
+              return message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the scores.`)
+                .catch((err) => { return errorHandler.discordMessageError(message, err) });
             }
-            return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-          });
-        }
 
-        message_embed = {
-          embed: {
-            color: 3447003,
-            author: {
-              name: '',
-              icon_url: 'https://i.imgur.com/hasGiOH.png'
-            },
-            fields: [{
-                name: '**Player information:**',
-                value: ''
+            message_embed = {
+              embed: {
+                title: '**Player information:**',
+                color: 3447003,
+                author: {
+                  name: '',
+                  icon_url: 'https://i.imgur.com/hasGiOH.png'
+                },
+                description: ''
                 + `**Total Score:** ${player.score.format()} (#${player.score_rank})`
                 + `\n**Military Score:** ${player.army_score_main.format()} (#${player.army_score_main_rank})`
                 + `\n**Gold Stock:** ${player.trader_score_secondary.format()} (#${player.trader_score_secondary_rank})`
@@ -80,33 +55,30 @@ exports.run = (client, message, args) => {
                 + `\n**Trader:** ${player.trade.format()} (#${player.trade_rank})`
                 + `\n**Resources:** ${player.resources.format()} (#${player.resources_rank})`
                 + `\n**Donations:** ${player.donations.format()} (#${player.donations_rank})`
-                + `\n**Capture Points:** ${player.piracy.format()} (#${player.piracy_rank})`
+                + `\n**Capture Points:** ${player.piracy.format()} (#${player.piracy_rank})`,
+                timestamp: Date.parse(player.update_time),
+                footer: {
+                  icon_url: 'https://i.imgur.com/MBLT0wt.png',
+                  text: 'ika-search.com'
+                }
               }
-            ],
-            timestamp: Date.parse(player.update_time),
-            footer: {
-              icon_url: 'https://i.imgur.com/MBLT0wt.png',
-              text: 'ika-search.com'
             }
-          }
-        }
 
-        if (player.tag) {
-          message_embed.embed.author.name = `${result.pseudo} (${player.tag})`;
-        }
-        else {
-          message_embed.embed.author.name = `${result.pseudo}`;
-        }
+            if (player.tag) {
+              message_embed.embed.author.name = `${result.pseudo} (${player.tag})`;
+            }
+            else {
+              message_embed.embed.author.name = `${result.pseudo}`;
+            }
 
-        message.channel.send(message_embed).catch((err) => {
-          if(err != "DiscordAPIError: Missing Permissions"){
-            return console.error(err);
-          }
-          return console.log(`Command !info: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
-        });
+            message.channel.send(message_embed)
+              .catch((err) => { return errorHandler.discordMessageError(message, err) });
 
+          });
+        }
       });
     }
+
   });
 
 }

@@ -4,9 +4,20 @@ const cheerio = require('cheerio');
 module.exports = (client, defaultSettings) => {
 
   function getBoardsData(callback) {
-    request('https://board.us.ikariam.gameforge.com/index.php/BoardFeed/24/', (error, response, body) => {
-      if (error) console.error;
-      callback(body);
+    let options = {
+      uri: 'https://board.us.ikariam.gameforge.com/index.php/BoardFeed/24/',
+      transform: (body) => {
+        return cheerio.load(body);
+      }
+    }
+    request(options)
+    .then((data) => {
+      callback(data);
+    })
+    .catch((error) => {
+      if (error.name == 'RequestError') {
+        return console.log("ENOTFOUND, Unable to get address info: " + error.message);
+      }
     });
   }
 
@@ -19,8 +30,8 @@ module.exports = (client, defaultSettings) => {
 
   let lastGameNews = new Date(Date.parse(client.clientData.get('clientSettings', 'lastGameNews')));
 
-  getBoardsData((html) => {
-    let $ = cheerio.load(html, {xmlMode: true});
+  getBoardsData((data) => {
+    let $ = data;
 
     $('item').each((i, element) => {
       let pubDate = element.children[7].children[0].data;

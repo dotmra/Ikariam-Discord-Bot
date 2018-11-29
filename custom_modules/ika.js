@@ -1,4 +1,6 @@
 const request = require('request-promise-native');
+const errorHandler = require('../custom_modules/error_handler.js');
+const cheerio = require('cheerio');
 const fs = require("fs");
 
 Number.prototype.format = function () {
@@ -11,56 +13,110 @@ module.exports = {
   wonder_emotes: ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'],
 
   getGuildServer: function(guildConf, message, callback) {
-    if (guildConf.commandMode === "ALL") {
-      callback(guildConf.commandModeAllServer.length != 0 ? guildConf.commandModeAllServer : null);
-    }
-    else {
-      callback(guildConf.channelServers.hasOwnProperty(message.channel.id) ? guildConf.channelServers[message.channel.id] : null);
+    try {
+      if (guildConf.botMode == "server") {
+        callback('server', guildConf.serverModeWorld.length != 0 ? guildConf.serverModeWorld : null);
+      }
+      else {
+        callback('channel', guildConf.channelModeWorlds.hasOwnProperty(message.channel.id) ? guildConf.channelModeWorlds[message.channel.id] : null);
+      }
+    } catch (err) {
+      return errorHandler.otherError(err);
     }
   },
 
-  getPlayerIds: function(ikaServer, callback) {
+  getIkariamRegionAndWorlds: function(iso, callback) {
+    try {
+      let options = {
+        uri: 'http://ika-search.com/',
+        transform: (body) => {
+          return cheerio.load(body);
+        }
+      }
+      request(options)
+      .then((data) => {
+        let $ = data;
+
+        $('script').each((i, element) => {
+          if (element.type == 'script' && element.children[0] != null) {
+            if (element.children[0].data.startsWith('\n            serverInfo')) { //\n            serverInfo
+              let filteredString = element.children[0].data.replace('\n            serverInfo = ', '').replace('\n        ', '');
+              let ikariamRegionsObject = JSON.parse(filteredString);
+
+              let region = ikariamRegionsObject.find(item => item[0].toLowerCase() == iso.toLowerCase() || item[1].toLowerCase() == iso.toLowerCase());
+              if(!region) {
+                return callback(false, ikariamRegionsObject);
+              }
+              else {
+                return callback(true, region);
+              }
+            }
+          }
+        });
+
+      })
+      .catch((err) => {
+        errorHandler.otherError(err);
+      });
+    } catch (err) {
+      return errorHandler.otherError(err);
+    }
+  },
+
+  getPlayerIds: function(iso, ikaServer, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "autocompleteList",
-        iso: "us",
+        iso: iso,
         server: ikaServer
       }
     }, (error, response, body) => {
-      callback(JSON.parse(body).player);
+      try {
+        callback(JSON.parse(body).player);
+      } catch (err) {
+        return errorHandler.jsonParseError(err);
+      }
     });
   },
 
-  getPlayerInfo: function(ikaServer, playerId, callback) {
+  getPlayerInfo: function(iso, ikaServer, playerId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "playerInfo",
-        iso: "us",
+        iso: iso,
         playerId: playerId,
         server: ikaServer
       }
     }, (error, response, body) => {
-      callback(JSON.parse(body));
+      try {
+        callback(JSON.parse(body));
+      } catch (err) {
+        return errorHandler.jsonParseError(err);
+      }
     });
   },
 
-  getIslandInfo: function(ikaServer, islandId, callback) {
+  getIslandInfo: function(iso, ikaServer, islandId, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
         action: "islandCities",
-        iso: "us",
+        iso: iso,
         islandId: islandId,
         server: ikaServer
       }
     }, (error, response, body) => {
-      callback(JSON.parse(body));
+      try {
+        callback(JSON.parse(body));
+      } catch (err) {
+        return errorHandler.jsonParseError(err);
+      }
     });
   },
 
-  getScoresInfo: function(ikaServer, playerId, scoreCategory, timeAmount, timeType, callback) {
+  getScoresInfo: function(iso, ikaServer, playerId, scoreCategory, timeAmount, timeType, callback) {
     request.post({
       url:'http://ika-search.com/getSite.py',
       form: {
@@ -68,50 +124,66 @@ module.exports = {
         dateNum: timeAmount,
         dateType: timeType,
         index: playerId,
-        iso: "us",
+        iso: iso,
         scoreType: scoreCategory,
         server: ikaServer,
         type: "player"
       }
     }, (error, response, body) => {
-      callback(JSON.parse(body));
+      try {
+        callback(JSON.parse(body));
+      } catch (err) {
+        return errorHandler.jsonParseError(err);
+      }
     });
   },
 
-  getTr: function(message, callback) {
+  getTr: function(iso, message, callback) {
     request.post({
       url: 'http://ika-search.com/getSite.py',
       form: {
         action: 'getTr',
-        iso: 'us'
+        iso: iso
       }
     }, (error, response, body) => {
-      callback(JSON.parse(body));
+      try {
+        callback(JSON.parse(body));
+      } catch (err) {
+        return errorHandler.jsonParseError(err);
+      }
     });
   },
 
-  verifyPlayerName: function(ikaServer, args, callback) {
-    module.exports.getPlayerIds(ikaServer, (playerArray) => {
+  verifyPlayerName: function(iso, ikaServer, args, callback) {
+    module.exports.getPlayerIds(iso, ikaServer, (playerArray) => {
       let player = playerArray.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
-      if(player == null){
-        callback(false);
-      }
-      else{
-        callback(player);
+      try {
+        if (player == null) {
+          callback(false);
+        }
+        else {
+          callback(player);
+        }
+      } catch (err) {
+        return errorHandler.otherError(err);
       }
     });
   },
 
-  verifyIslandCoordAndGetId: function(ikaServer, x_coord, y_coord, callback) {
+  verifyIslandCoordAndGetId: function(x_coord, y_coord, callback) {
     fs.readFile('./data/islands.json', 'UTF-8', (err, data) => {
       if (err) throw err;
       let json_data = JSON.parse(data);
       let island = json_data.islands.find(item => item.x == x_coord && item.y == y_coord);
-      if(island == null){
-        callback(false);
-      }
-      else{
-        callback(island);
+      try {
+        if (island == null) {
+          callback(false);
+        }
+        else {
+          callback(island);
+        }
+      } catch (err) {
+        return errorHandler.otherError(err);
       }
     });
   }

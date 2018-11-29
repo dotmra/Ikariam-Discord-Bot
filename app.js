@@ -24,10 +24,10 @@ client.settings = new Enmap({
 
 const defaultSettings = {
   prefix: "!",
-  adminRole: "Admin",
-  commandMode: "ALL",
-  commandModeAllServer: "",
-  channelServers: {
+  botMode: "server",
+  botRegion: "us",
+  serverModeWorld: "",
+  channelModeWorlds: {
   },
   newsChannel: ""
 }

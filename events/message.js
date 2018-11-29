@@ -1,3 +1,6 @@
+const errorHandler = require('../custom_modules/error_handler.js');
+const messageLogger = require('../custom_modules/message_logger.js');
+
 module.exports = (client, message, defaultSettings) => {
   if(!message.guild || message.author.bot) return;
 
@@ -11,73 +14,47 @@ module.exports = (client, message, defaultSettings) => {
   try {
     let commandFile = require(`../commands/${command}.js`);
 
-    /*if (command === "setconf") {
-      commandFile.run(guildConf, client, message, args);
-    }*/
-
-    /*if (command === "showconf") {
-      commandFile.run(guildConf, client, message, args);
-    }*/
-
-    if (command === "test") {
-      commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
-    }
-
     if (command === "commands") {
       commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
     }
 
-    if (command === "setnewschannel") {
-      commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+    if (command === "region") {
+      commandFile.run(client, message, args, guildConf);
     }
 
-    if (command === "addserver") {
-      commandFile.run(guildConf, client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+    if (command === "ikariamworld") {
+      commandFile.run(client, message, args, guildConf);
     }
 
-    if (command === "globalserver") {
-      commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+    if (command === "mode") {
+      commandFile.run(client, message, args, guildConf);
     }
 
     if (command === "find") {
-      commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      commandFile.run(client, message, args, guildConf);
     }
 
     if (command === "info") {
-      commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      commandFile.run(client, message, args, guildConf);
     }
 
     if (command === "growth") {
-      commandFile.run(client, message, args);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      commandFile.run(client, message, args, guildConf);
     }
 
     if (command === "island") {
-      commandFile.run(client, message, args, defaultSettings);
-      console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.author.tag} issued command '${command} ${args.join(' ')}' in server: '${message.guild.name}' (${message.guild.id}) in channel '#${message.channel.name}'`);
+      commandFile.run(client, message, args, guildConf);
+    }
+
+    if (command === "test") {
+      commandFile.run(client, message, args);
     }
 
   } catch (err) {
-    if(err.code == 'MODULE_NOT_FOUND') { //if command file is not found, e.g. not a command
+    if(err.code == 'MODULE_NOT_FOUND') { //if command file is not found, e.g. command file is deleted
       return;
-      /*return message.channel.send(`\`${guildConf.prefix}${command}\` is not a command. To view all commands do \`!commands\``).catch((err) => {
-        if(err != "DiscordAPIError: Missing Permissions"){
-          return console.error(err);
-        }
-        return console.log(`Command '${command} ${args.join(' ')}': No permission to send message to channel '#${message.channel.name}' in guild '${message.guild.name}' (${message.guild.id}) (DiscordAPIError: Missing Permissions)`);
-      });*/
     }
-    if(err != "DiscordAPIError: Missing Permissions"){
-      return console.error(err);
-    }
-    return console.log(`Command '${command} ${args.join(' ')}': No permission to send message to channel '#${message.channel.name}' in guild '${message.guild.name}' (${message.guild.id}) (DiscordAPIError: Missing Permissions)`);
+    return errorHandler.discordMessageError(message, err)
   }
 
 }

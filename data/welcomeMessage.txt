@@ -1,0 +1,9 @@
+**Hey**, thanks for inviting me. Let us setup how I work on this server. Instructions can also be found over on <https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server>
+
+**1.** First, let's choose what region you want me to use, currently :flag_us: `us` is set, if you want to change that use `!region`, for example `!region en` for :flag_gb: or `!region France` for :flag_fr:.
+
+**2.** Now you need to choose what Ikariam world(s) to use for commands. There are two modes the bot can work in: `Server Mode` or `Channel Mode`. Currently, `Server Mode` is selected. `Server Mode` means that all channels on the discord server use the same Ikariam world for commands.  `Channel Mode` allows you to set one Ikariam world per discord channel. This can be good for alliances spread over several Ikariam worlds but with one Discord server, or Ikariam community Discord servers. If your Discord is just one alliance in one Ikariam world, I recommend just using `Server Mode` as it is easier to configure, and you can skip this step. To change the mode, use `!mode` like `!mode Server`.
+
+**3.** So, once you have chosen what mode to use, you can go ahead and set what Ikariam world(s) to use for commands. If you have `Server Mode` enabled, use `!ikariamworld` like `!ikariamworld Alpha` to set the Ikariam world to use in all discord channels. If you have `Channel Mode` enabled, do the same command, but for all channels you want the bot to work in. For example `!ikariamworld Alpha` in #alpha and `!ikariamworld Beta` in #beta.
+
+**4.** You're all set! For a list of commands do `!commands`. If you are having problems setting up the bot and getting it to work, or general questions and help, please do not hesitate to contact my creator on Discord: `7marre#7777`
