@@ -1,38 +1,36 @@
 # Ikariam-Discord-Bot
 
-This bot retrieves information from http://ika-search.com/ and makes the information accessible via commands, so you can easily lookup information about players without leaving Discord, and making it especially easy on mobile.
+Ikariam Discord Bot is a Discord Bot for the browser game Ikariam. The bot makes it easy to find information about players, islands and alliances quickly and adds features that are not even available in the game itself. The bot is made to show information mobile friendly, so you can enjoy the awesome features of the bot on mobile without any frustration.
 
 ## Adding the bot to your server
-https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
+For information on how to add the bot to your own Discord server follow the instructions on this wiki page: https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
 
-## Current Commands:
-- !find (Player Name)
--- Shows a list of the specified players towns
+## Commands:
+- !info \<Player Name\> -- Display information about a player, like rankings in all score categories and if the player is inactive or in vacation mode.
 
-- !growth (Player Name)
--- Shows the growth of a players total score over 30 days
+- !find \<Player Name\> -- Display a list of a player's towns.
 
-- !growth (Player Name), (Score Category), (Duration In Days)
--- Shows the growth of a players score in the specified category over the specified amount of days
+- !growth \<Player Name\>, \[Score Category\], \[Duration In Days\] -- Display the growth of a player's score in specified category over specified amount of days. Score Category and Duration In Days are optional arguments.
 
-- !island (XX:YY)
--- Shows information about what towns and players are on the island along with their military score
+- !island \<XX:YY\> -- Display information about an island like the towns, it's players, military score, the level of saw mill, wonder etc.
 
-- !info (Player Name)
--- Shows a players score and ranking in all score categories, also indicates if the player is inactive or in vacation mode
 
-### Admin Commands (must be an Administrator):
-- !globalserver (off / Ikariam Server Name)
--- Sets the Ikariam server to be used for all channels. If you turn this off you can use !addserver.
+### Admin Commands (must be an Administrator on the Discord server):
+- !region \<Ikariam Region\> -- Set the Ikariam region the bot should use.
 
-- !addserver (Ikariam Server Name)
--- Use this in each channel you want commands to work, this allows for different ikariam servers in different channels.
+- !mode \<Server/Channel\> -- Set the mode the bot will work in. Channel mode allows you to set one Ikariam world per Discord channel. Server mode uses one Ikariam world across all Discord channels.
   
-- !setnewschannel
--- Use this command in desired channel where you want the bot to automatically post Game News from Boards.
+- !ikariamworld \<Ikariam World\> -- Set the Ikariam world to use for the Discord server or channel.
 
 ## Planned features:
 
 - Set your own command prefix
 
+- !alliance and !alliancegrowth
+
+- !traveltime
+
 - Come with suggestions, everything is considered!
+
+## Help, Support and Questions:
+7marre#7777 on Discord :)
