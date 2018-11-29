@@ -28,12 +28,10 @@ exports.run = (client, message, args, guildConf) => {
 
     else {
       if (regionObject[0] == 'en') {
-        console.log(regionObject);
         commandMessage = `You chose the :flag_gb: \`${regionObject[0]}\` region. Available worlds: `;
         commandMessage += `${regionObject[2].join(', ')}. Use \`!ikariamworld\` to choose what Ikariam world to use for commands.`;
       }
       else {
-        console.log(regionObject);
         commandMessage = `You chose the :flag_${regionObject[0]}: \`${regionObject[0]}\` region. Available worlds: `;
         commandMessage += `${regionObject[2].join(', ')}. Use \`!ikariamworld\` to choose what Ikariam world to use for commands.`;
       }
