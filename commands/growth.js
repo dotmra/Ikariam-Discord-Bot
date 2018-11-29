@@ -73,7 +73,7 @@ exports.run = (client, message, args, guildConf) => {
 
                 message_embed = {
                   embed: {
-                    title: `**${scoreTypeFriendly} Information:**`,
+                    title: `**${scoreTypeFriendly} Growth:**`,
                     color: 3447003,
                     author: {
                       name: '',
@@ -109,6 +109,8 @@ exports.run = (client, message, args, guildConf) => {
                     message_embed.embed.description += `\n**+${growthPoints.format()}** Points`;
                     message_embed.embed.description += `\n**+${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
                   }
+
+                  message_embed.embed.title += ` ${ika.other_emotes[playerObject.player.state]}`;
 
                   message.channel.send(message_embed)
                     .catch((err) => { return errorHandler.discordMessageError(message, err) });

@@ -64,13 +64,7 @@ exports.run = (client, message, args, guildConf) => {
                 else {
                   message_embed.embed.description += `\n**${city.pseudo}** **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
                 }
-                if(city.state == 1){
-                  message_embed.embed.description += ' <:vacation:513831745720942603>';
-                }
-                if(city.state == 2){
-                  message_embed.embed.description += ' <:inactive:513831746249162762>';
-                  inactive_count++;
-                }
+                message_embed.embed.description += ` ${ika.other_emotes[city.state]}`;
               });
             }
 

@@ -50,12 +50,6 @@ exports.run = (client, message, args, guildConf) => {
             else {
               message_embed.embed.author.name = `${result.pseudo}`;
             }
-            if(playerObject.player.state == 1){
-              message_embed.embed.title += ' <:vacation:513831745720942603>';
-            }
-            if(playerObject.player.state == 2){
-              message_embed.embed.title += ' <:inactive:513831746249162762>';
-            }
 
             if (playerObject.cities.length == 0) {
               return message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the town locations.`)
@@ -65,6 +59,8 @@ exports.run = (client, message, args, guildConf) => {
             playerObject.cities.forEach((city) => {
               message_embed.embed.description += `\n**[${city.x}:${city.y}]** - ${city.name} (${city.level}) ${ika.wonder_emotes[city.wonder_id]}${ika.resource_emotes[city.resource_id]}`;
             });
+
+            message_embed.embed.title += ` ${ika.other_emotes[playerObject.player.state]}`;
 
             return message.channel.send(message_embed)
               .catch((err) => { return errorHandler.discordMessageError(message, err) });

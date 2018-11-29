@@ -71,6 +71,8 @@ exports.run = (client, message, args, guildConf) => {
               message_embed.embed.author.name = `${result.pseudo}`;
             }
 
+            message_embed.embed.title += ` ${ika.other_emotes[player.state]}`;
+
             message.channel.send(message_embed)
               .catch((err) => { return errorHandler.discordMessageError(message, err) });
 

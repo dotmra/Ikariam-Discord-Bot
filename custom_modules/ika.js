@@ -9,8 +9,9 @@ Number.prototype.format = function () {
 
 module.exports = {
 
-  resource_emotes: ['', '<:wine:506517055579881472>', '<:marble:506517055739133952>', '<:crystal:506517055382618122>', '<:sulfur:506517055437275159>', '<:wood:506517055550259220>'],
-  wonder_emotes: ['', '<:forge:506517054963318815>', '<:hadesholygrove:506517054992678943>', '<:demetersgarden:506517055650922497>', '<:templeofathene:506517055583944714>', '<:templeofhermes:506517055613304833>', '<:aresstronghold:506517055030296606>', '<:poseidon:506517055252725781>', '<:colossus:506517055395069952>'],
+  resource_emotes: ['', '<:wine:513831746094104597>', '<:marble:513831745867481106>', '<:crystal:513831746014281730>', '<:sulfur:513831745922007060>', '<:wood:513831746408677376> '],
+  wonder_emotes: ['', '<:forge:513831745859223568>', '<:hadesholygrove:513831745708228629>', '<:demetersgarden:513831745402175492>', '<:templeofathene:513831745670348823>', '<:templeofhermes:513831745976533012>', '<:aresstronghold:513831745662091300>', '<:poseidon:513831745796177934>', '<:colossus:513831745611759657>'],
+  other_emotes: ['', '<:vacation:513831745720942603>', '<:inactive:513831746249162762>'],
 
   getGuildServer: function(guildConf, message, callback) {
     try {
