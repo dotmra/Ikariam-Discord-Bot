@@ -15,7 +15,7 @@ module.exports = (client, guild) => {
     if (filteredChannels) {
       let sortedChannels = filteredChannels.sort((chan1, chan2) => {return chan1.position < chan2.position ? -1 : 1});
       sortedChannels.first().send(welcomeMessage)
-        .catch((err) => { return errorHandler.discordMessageError(message, err) });
+        .catch((err) => { return errorHandler.otherError(err) });
       return console.log(`Successfully sent guildCreate message in guild '${guild.name}' in channel '#${sortedChannels.first().name}'`);
     }
 
