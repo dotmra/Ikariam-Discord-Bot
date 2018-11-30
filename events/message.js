@@ -1,8 +1,16 @@
 const errorHandler = require('../custom_modules/error_handler.js');
 const messageLogger = require('../custom_modules/message_logger.js');
+const Bottleneck = require("bottleneck");
+const limiter = new Bottleneck({
+  maxConcurrent: 1,
+  minTime: 5000
+});
+
 
 module.exports = (client, message, defaultSettings) => {
   if(!message.guild || message.author.bot) return;
+
+  messageLogger.log(client, message);
 
   const guildConf = client.settings.ensure(message.guild.id, defaultSettings);
 
@@ -19,11 +27,15 @@ module.exports = (client, message, defaultSettings) => {
     }
 
     if (command === "region") {
-      commandFile.run(client, message, args, guildConf);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
     if (command === "ikariamworld") {
-      commandFile.run(client, message, args, guildConf);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
     if (command === "mode") {
@@ -31,19 +43,27 @@ module.exports = (client, message, defaultSettings) => {
     }
 
     if (command === "find") {
-      commandFile.run(client, message, args, guildConf);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
     if (command === "info") {
-      commandFile.run(client, message, args, guildConf);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
     if (command === "growth") {
-      commandFile.run(client, message, args, guildConf);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
     if (command === "island") {
-      commandFile.run(client, message, args, guildConf);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
     if (command === "test") {

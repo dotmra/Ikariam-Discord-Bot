@@ -31,7 +31,8 @@ exports.run = (client, message, args, guildConf) => {
         }
 
         else {
-          ika.getIslandInfo(region, ikaServer, result.id, (islandObject) => {
+          ika.getIslandInfo(region, ikaServer, result.id)
+          .then((islandObject) => {
 
             message_embed = {
               embed: {
@@ -58,20 +59,33 @@ exports.run = (client, message, args, guildConf) => {
 
             else {
               islandObject.cities.forEach((city) => {
-                if(city.tag) {
-                  message_embed.embed.description += `\n**${city.pseudo}**(${city.tag}) **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
+                if (!city.army_score_main) {
+                  if(city.tag) {
+                    message_embed.embed.description += `\n**${city.pseudo}**(${city.tag}) **-** ${city.name} (${city.level}) **-** unknown MS`;
+                  }
+                  else {
+                    message_embed.embed.description += `\n**${city.pseudo}** **-** ${city.name} (${city.level}) **-** unknown MS`;
+                  }
+                  message_embed.embed.description += ` ${ika.other_emotes[city.state]}`;
                 }
                 else {
-                  message_embed.embed.description += `\n**${city.pseudo}** **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
+                  if(city.tag) {
+                    message_embed.embed.description += `\n**${city.pseudo}**(${city.tag}) **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
+                  }
+                  else {
+                    message_embed.embed.description += `\n**${city.pseudo}** **-** ${city.name} (${city.level}) **-** ${city.army_score_main.format()} MS`;
+                  }
+                  message_embed.embed.description += ` ${ika.other_emotes[city.state]}`;
                 }
-                message_embed.embed.description += ` ${ika.other_emotes[city.state]}`;
               });
             }
 
             message_embed.embed.author.name = `[${x_coord}:${y_coord}] ${islandObject.island.name}, ${islandObject.cities.length}/17, ${inactive_count} inactive`;
             message.channel.send(message_embed)
               .catch((err) => { return errorHandler.discordMessageError(message, err) });
-
+          })
+          .catch((err) => {
+            return errorHandler.otherError(err);
           });
         }
       });

@@ -64,111 +64,135 @@ module.exports = {
     }
   },
 
-  getPlayerIds: function(iso, ikaServer, callback) {
-    request.post({
-      url:'http://ika-search.com/getSite.py',
-      form: {
-        action: "autocompleteList",
-        iso: iso,
-        server: ikaServer
-      }
-    }, (error, response, body) => {
-      try {
-        callback(JSON.parse(body).player);
-      } catch (err) {
-        return errorHandler.jsonParseError(err);
-      }
-    });
-  },
-
-  getPlayerInfo: function(iso, ikaServer, playerId, callback) {
-    request.post({
-      url:'http://ika-search.com/getSite.py',
-      form: {
-        action: "playerInfo",
-        iso: iso,
-        playerId: playerId,
-        server: ikaServer
-      }
-    }, (error, response, body) => {
-      try {
-        callback(JSON.parse(body));
-      } catch (err) {
-        return errorHandler.jsonParseError(err);
-      }
-    });
-  },
-
-  getIslandInfo: function(iso, ikaServer, islandId, callback) {
-    request.post({
-      url:'http://ika-search.com/getSite.py',
-      form: {
-        action: "islandCities",
-        iso: iso,
-        islandId: islandId,
-        server: ikaServer
-      }
-    }, (error, response, body) => {
-      try {
-        callback(JSON.parse(body));
-      } catch (err) {
-        return errorHandler.jsonParseError(err);
-      }
-    });
-  },
-
-  getScoresInfo: function(iso, ikaServer, playerId, scoreCategory, timeAmount, timeType, callback) {
-    request.post({
-      url:'http://ika-search.com/getSite.py',
-      form: {
-        action: "getScores",
-        dateNum: timeAmount,
-        dateType: timeType,
-        index: playerId,
-        iso: iso,
-        scoreType: scoreCategory,
-        server: ikaServer,
-        type: "player"
-      }
-    }, (error, response, body) => {
-      try {
-        callback(JSON.parse(body));
-      } catch (err) {
-        return errorHandler.jsonParseError(err);
-      }
-    });
-  },
-
-  getTr: function(iso, message, callback) {
-    request.post({
-      url: 'http://ika-search.com/getSite.py',
-      form: {
-        action: 'getTr',
-        iso: iso
-      }
-    }, (error, response, body) => {
-      try {
-        callback(JSON.parse(body));
-      } catch (err) {
-        return errorHandler.jsonParseError(err);
-      }
-    });
-  },
-
-  verifyPlayerName: function(iso, ikaServer, args, callback) {
-    module.exports.getPlayerIds(iso, ikaServer, (playerArray) => {
-      let player = playerArray.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
-      try {
-        if (player == null) {
-          callback(false);
+  getPlayerIds: async function(iso, ikaServer) {
+    let promise = new Promise((resolve, reject) => {
+      let options = {
+        method: 'POST',
+        uri:'http://ika-search.com/getSite.py',
+        formData: {
+          action: "autocompleteList",
+          iso: iso,
+          server: ikaServer
         }
-        else {
-          callback(player);
-        }
-      } catch (err) {
-        return errorHandler.otherError(err);
       }
+      request(options)
+        .then((body) => {
+          if (body.startsWith('"error"')) {
+            console.log("TRUE 1");
+            reject('error');
+          }
+          else {
+            resolve(JSON.parse(body));
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
+    return await promise;
+  },
+
+  getPlayerInfo: async function(iso, ikaServer, playerId) {
+    let promise = new Promise((resolve, reject) => {
+      let options = {
+        method: 'POST',
+        uri:'http://ika-search.com/getSite.py',
+        formData: {
+          action: "playerInfo",
+          iso: iso,
+          playerId: playerId,
+          server: ikaServer
+        }
+      }
+      request(options)
+        .then((body) => {
+          if (body.startsWith('"error"')) {
+            reject('error');
+          }
+          else {
+            resolve(JSON.parse(body));
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+    return await promise;
+  },
+
+  getIslandInfo: async function(iso, ikaServer, islandId) {
+    let promise = new Promise((resolve, reject) => {
+      let options = {
+        method: 'POST',
+        uri:'http://ika-search.com/getSite.py',
+        formData: {
+          action: "islandCities",
+          iso: iso,
+          islandId: islandId,
+          server: ikaServer
+        }
+      }
+      request(options)
+        .then((body) => {
+          resolve(JSON.parse(body));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+    return await promise;
+  },
+
+  getScoresInfo: async function(iso, ikaServer, playerId, scoreCategory, timeAmount, timeType) {
+    let promise = new Promise((resolve, reject) => {
+      let options = {
+        method: 'POST',
+        uri:'http://ika-search.com/getSite.py',
+        formData: {
+          action: "getScores",
+          dateNum: timeAmount,
+          dateType: timeType,
+          index: playerId,
+          iso: iso,
+          scoreType: scoreCategory,
+          server: ikaServer,
+          type: "player"
+        }
+      }
+      request(options)
+        .then((body) => {
+          resolve(JSON.parse(body));
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+    return await promise;
+  },
+
+  verifyPlayerName: async function(iso, ikaServer, args) {
+    let promise = new Promise((resolve, reject) => {
+
+      module.exports.getPlayerIds(iso, ikaServer)
+      .then((playerArray) => {
+        try {
+          let player = playerArray.player.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
+          if (player == null) {
+            resolve(false);
+          }
+          else {
+            resolve(player);
+          }
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+    });
+
+    return await promise;
   },
 
   verifyIslandCoordAndGetId: function(x_coord, y_coord, callback) {

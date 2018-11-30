@@ -19,14 +19,15 @@ exports.run = (client, message, args, guildConf) => {
     }
 
     else {
-      ika.verifyPlayerName(region, ikaServer, args, (result) => {
+      ika.verifyPlayerName(region, ikaServer, args)
+      .then((result) => {
         if(!result){
           message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`)
             .catch((err) => { return errorHandler.discordMessageError(message, err) });
         }
         else{
-          ika.getPlayerInfo(region, ikaServer, result.id, (playerObject) => {
-
+          ika.getPlayerInfo(region, ikaServer, result.id)
+          .then((playerObject) => {
             player = playerObject.player;
 
             if (!player.trader_score_secondary) {
@@ -76,8 +77,14 @@ exports.run = (client, message, args, guildConf) => {
             message.channel.send(message_embed)
               .catch((err) => { return errorHandler.discordMessageError(message, err) });
 
+          })
+          .catch((err) => {
+            return errorHandler.otherError(err);
           });
         }
+      })
+      .catch((err) => {
+        return errorHandler.otherError(err);
       });
     }
 

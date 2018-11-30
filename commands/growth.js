@@ -42,7 +42,8 @@ exports.run = (client, message, args, guildConf) => {
           .catch((err) => { return errorHandler.discordMessageError(message, err) });
       }
 
-      ika.verifyPlayerName(region, ikaServer, playerName, (result) => {
+      ika.verifyPlayerName(region, ikaServer, playerName)
+      .then((result) => {
 
         if(!result) {
           message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`)
@@ -66,7 +67,8 @@ exports.run = (client, message, args, guildConf) => {
               scoreType = scoreTypeItem.rawName;
               scoreTypeFriendly = scoreTypeItem.friendlyName;
 
-              ika.getScoresInfo(region, ikaServer, result.id, scoreType, dateNum, dateType, (results) => {
+              ika.getScoresInfo(region, ikaServer, result.id, scoreType, dateNum, dateType)
+              .then((results) => {
 
                 let daysAmount1 = new Date(Date.parse(results[results.length - 1].d)).getTime() - new Date(Date.parse(results[0].d)).getTime();
                 let daysAmount2 = Math.ceil(daysAmount1 / (1000 * 3600 * 24));
@@ -88,7 +90,8 @@ exports.run = (client, message, args, guildConf) => {
                   }
                 }
 
-                ika.getPlayerInfo(region, ikaServer, result.id, (playerObject) => {
+                ika.getPlayerInfo(region, ikaServer, result.id)
+                .then((playerObject) => {
 
                   message_embed.embed.author.name = `${result.pseudo}`;
                   if (playerObject.player.tag) {
@@ -115,14 +118,20 @@ exports.run = (client, message, args, guildConf) => {
                   message.channel.send(message_embed)
                     .catch((err) => { return errorHandler.discordMessageError(message, err) });
 
+                })
+                .catch((err) => {
+                  return errorHandler.otherError(err);
                 });
+              })
+              .catch((err) => {
+                return errorHandler.otherError(err);
               });
-
             }
           });
-
         }
-
+      })
+      .catch((err) => {
+        return errorHandler.otherError(err);
       });
     }
 
