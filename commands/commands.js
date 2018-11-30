@@ -7,7 +7,7 @@ exports.run = (client, message, args) => {
       color: 3447003,
       fields: [
         {
-          name: "Noraml Commands",
+          name: "Normal Commands",
           value: ""
           + "\n**!info** <Player Name>"
           + "\n**!find** <Player Name>"
