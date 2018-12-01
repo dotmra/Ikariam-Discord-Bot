@@ -22,6 +22,8 @@ module.exports = (client, message, defaultSettings) => {
   try {
     let commandFile = require(`../commands/${command}.js`);
 
+    console.log(`COMMAND: ${new Date().toLocaleTimeString()}: ${message.guild.name}, #${message.channel.name}, ${message.author.tag}: ${message.content}`);
+
     if (command === "commands") {
       commandFile.run(client, message, args);
     }
@@ -67,7 +69,9 @@ module.exports = (client, message, defaultSettings) => {
     }
 
     if (command === "test") {
-      commandFile.run(client, message, args);
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
     }
 
   } catch (err) {

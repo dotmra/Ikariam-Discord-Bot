@@ -14,34 +14,33 @@ exports.run = (client, message, args, guildConf) => {
 
   region = client.settings.get(message.guild.id, 'botRegion');
 
-  ika.getIkariamRegionAndWorlds(region, (foundRegion, regionObject) => { // CHANGE 'us' TO THE ISO IN Guild Conf
-    ikariamWorld = regionObject[2].find(item => item.toLowerCase() == args.join(' ').toLowerCase());
+  ika.getIkariamRegionAndWorlds(region)
+  .then(([foundRegion, regionObject, region]) => {
+    ikariamWorld = region[2].find(item => item.toLowerCase() == args.join(' ').toLowerCase());
     if (!ikariamWorld) {
-      commandMessage = `Could not find an Ikariam world with the name \`${args.join(' ')}\`. Available worlds: `;
-      commandMessage += `${regionObject[2].join(', ')}.`;
-      return message.channel.send(commandMessage)
-        .catch((err) => { return errorHandler.discordMessageError(message, err) });
+      message.channel.send(`Could not find an Ikariam world with the name \`${args.join(' ')}\`. Available worlds: ${region[2].join(', ')}.`);
+      throw new Error('Error handled: Could not find Ikariam world with name provided.');
     }
-    else {
 
+    else {
       if (guildConf.botMode == 'server') {
         client.settings.set(message.guild.id, ikariamWorld, "serverModeWorld");
-        return message.channel.send(`The Ikariam world \`${ikariamWorld}\` will now be used for commands in all channels.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
+        return message.channel.send(`The Ikariam world \`${ikariamWorld}\` will now be used for commands in all channels.`);
       }
       else if (guildConf.botMode == 'channel') {
         guildConf.channelModeWorlds[message.channel.id] = ikariamWorld;
         client.settings.set(message.guild.id, guildConf.channelModeWorlds, "channelModeWorlds");
-        return message.channel.send(`The Ikariam world \`${ikariamWorld}\` will now be used for commands in channel \`#${message.channel.name}\`.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
+        return message.channel.send(`The Ikariam world \`${ikariamWorld}\` will now be used for commands in channel \`#${message.channel.name}\`.`);
       }
       else {
         errorHandler.customError('Could not determine if Guild has Server Mode or Channel Mode. Message:\n' + message.content);
-        return message.channel.send(`Unable to determine if this Discord server uses \`Server Mode\` or \`Channel Mode\`. Do \`!mode\`.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
+        message.channel.send(`Unable to determine if this Discord server uses \`Server Mode\` or \`Channel Mode\`. Please do \`!mode\` to set the mode.`);
+        throw new Error('Error handled: Unable to determine if Discord server uses Server Mode or Channel Mode.');
       }
     }
-  });
 
+  })
+
+  .catch((err) => { return errorHandler.handledError(err) });
 
 }

@@ -8,36 +8,27 @@ exports.run = (client, message, args, guildConf) => {
       .catch((err) => { return errorHandler.discordMessageError(message, err) });
   }
 
-  ika.getIkariamRegionAndWorlds(args.join(' '), (foundRegion, regionObject) => {
+  let commandMessage;
 
-    let commandMessage;
-
+  ika.getIkariamRegionAndWorlds(args.join(' '))
+  .then(([foundRegion, regionObject, region]) => {
     if(!foundRegion){
       commandMessage = '**Available Ikariam Regions:**\n';
       regionObject.forEach((region) => {
-        if (region[0] == 'en') {
-          commandMessage += `:flag_gb: \`${region[0]}\` - **${region[1]}**\n`;
-        }
-        else {
-          commandMessage += `:flag_${region[0]}: \`${region[0]}\` - **${region[1]}**\n`;
-        }
+        commandMessage += `:flag_${region[0] == 'en' ? 'gb' : region[0]}: \`${region[0]}\` - **${region[1]}**\n`;
       });
-      commandMessage += '\nPick a region from the list above, for example `!region en` or `!region United Kingdom`.'
-      return message.channel.send(commandMessage);
+      commandMessage += '\nInvalid region. Pick a region from the list above, for example `!region en` or `!region United Kingdom`.'
+      message.channel.send(commandMessage);
+      throw new Error('Error handled: Could not find Ikariam region with name provided.');
     }
-
     else {
-      if (regionObject[0] == 'en') {
-        commandMessage = `You chose the :flag_gb: \`${regionObject[0]}\` region. Available worlds: `;
-        commandMessage += `${regionObject[2].join(', ')}. Use \`!ikariamworld\` to choose what Ikariam world to use for commands.`;
-      }
-      else {
-        commandMessage = `You chose the :flag_${regionObject[0]}: \`${regionObject[0]}\` region. Available worlds: `;
-        commandMessage += `${regionObject[2].join(', ')}. Use \`!ikariamworld\` to choose what Ikariam world to use for commands.`;
-      }
-      client.settings.set(message.guild.id, regionObject[0], "botRegion");
+      commandMessage = `You chose the :flag_${region[0] == 'en' ? 'gb' : region[0]}: \`${region[0]}\` region. Available worlds: `;
+      commandMessage += `\`${region[2].join('\`, \`')}\`. Use \`!ikariamworld\` to choose what Ikariam world to use for commands.`;
+      client.settings.set(message.guild.id, region[0], "botRegion");
       return message.channel.send(commandMessage);
     }
-  });
+  })
+
+  .catch((err) => { return errorHandler.handledError(err) });
 
 }

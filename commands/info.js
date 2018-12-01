@@ -3,91 +3,56 @@ const errorHandler = require('../custom_modules/error_handler.js');
 
 exports.run = (client, message, args, guildConf) => {
 
-  ika.getGuildServer(guildConf, message, (mode, ikaServer) => {
+  ika.getIkariamRegionAndWorld(guildConf, message)
+  .then(([mode, region, ikariamWorld]) => {
+    if (!ikariamWorld) {
+      message.channel.send(`You have not yet assigned an Ikariam world to use${mode == 'server' ? '' : ' in this channel'}. Use \`!ikariamworld\` to choose a world to use.`);
+      throw new Error('Error handled: Ikariam world not assigned to channel/guild.');
+    }
+    return ika.verifyPlayerName(region, ikariamWorld, args);
+  })
 
-    let region = client.settings.get(message.guild.id, 'botRegion');
+  .then(([player, region, ikariamWorld]) => {
+    if(!player){
+      message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`);
+      throw new Error('Error handled: Player not found with name provided.');
+    }
+    return ika.getPlayerInfo(region, ikariamWorld, player.id);
+  })
 
-    if (!ikaServer) {
-      if (mode == 'server') {
-        return message.channel.send(`You have not yet assigned an Ikariam world to use. Use \`!ikariamworld\` to choose a world to use.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
-      }
-      else {
-        return message.channel.send(`You have not yet assigned an Ikariam world to use in this channel. Use \`!ikariamworld\` to choose a world to use.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
-      }
+  .then(([region, ikariamWorld, playerObject]) => {
+    if (!playerObject.player.trader_score_secondary) {
+      message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the scores.`);
+      throw new Error('Error handled: Player registerd but no score information available.');
     }
 
-    else {
-      ika.verifyPlayerName(region, ikaServer, args)
-      .then((result) => {
-        if(!result){
-          message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`)
-            .catch((err) => { return errorHandler.discordMessageError(message, err) });
-        }
-        else{
-          ika.getPlayerInfo(region, ikaServer, result.id)
-          .then((playerObject) => {
-            player = playerObject.player;
-
-            if (!player.trader_score_secondary) {
-              return message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the scores.`)
-                .catch((err) => { return errorHandler.discordMessageError(message, err) });
-            }
-
-            message_embed = {
-              embed: {
-                title: '**Player information:**',
-                color: 3447003,
-                author: {
-                  name: '',
-                  icon_url: 'https://i.imgur.com/hasGiOH.png'
-                },
-                description: ''
-                + `**Total Score:** ${player.score.format()} (#${player.score_rank})`
-                + `\n**Military Score:** ${player.army_score_main.format()} (#${player.army_score_main_rank})`
-                + `\n**Gold Stock:** ${player.trader_score_secondary.format()} (#${player.trader_score_secondary_rank})`
-                + `\n**Master Builders:** ${player.building_score_main.format()} (#${player.building_score_main_rank})`
-                + `\n**Building Levels:** ${player.building_score_secondary.format()} (#${player.building_score_secondary_rank})`
-                + `\n**Scientists:** ${player.research_score_main.format()} (#${player.research_score_main_rank})`
-                + `\n**Levels of Research:** ${player.research_score_secondary.format()} (#${player.research_score_secondary_rank})`
-                + `\n**Offensive Points:** ${player.offense.format()} (#${player.offense_rank})`
-                + `\n**Defence Points:** ${player.defense.format()} (#${player.defense_rank})`
-                + `\n**Trader:** ${player.trade.format()} (#${player.trade_rank})`
-                + `\n**Resources:** ${player.resources.format()} (#${player.resources_rank})`
-                + `\n**Donations:** ${player.donations.format()} (#${player.donations_rank})`
-                + `\n**Capture Points:** ${player.piracy.format()} (#${player.piracy_rank})`,
-                timestamp: Date.parse(player.update_time),
-                footer: {
-                  icon_url: 'https://i.imgur.com/MBLT0wt.png',
-                  text: 'ika-search.com'
-                }
-              }
-            }
-
-            if (player.tag) {
-              message_embed.embed.author.name = `${result.pseudo} (${player.tag})`;
-            }
-            else {
-              message_embed.embed.author.name = `${result.pseudo}`;
-            }
-
-            message_embed.embed.title += ` ${ika.other_emotes[player.state]}`;
-
-            message.channel.send(message_embed)
-              .catch((err) => { return errorHandler.discordMessageError(message, err) });
-
-          })
-          .catch((err) => {
-            return errorHandler.otherError(err);
-          });
-        }
-      })
-      .catch((err) => {
-        return errorHandler.otherError(err);
-      });
+    embed_message = {
+      embed: {
+        title: `**Player information:** ${ika.other_emotes[playerObject.player.state]}`,
+        color: 3447003,
+        author: {name: '', icon_url: 'https://i.imgur.com/hasGiOH.png'},
+        description: ''
+        + `**Total Score:** ${playerObject.player.score.format()} (#${playerObject.player.score_rank})`
+        + `\n**Military Score:** ${playerObject.player.army_score_main.format()} (#${playerObject.player.army_score_main_rank})`
+        + `\n**Gold Stock:** ${playerObject.player.trader_score_secondary.format()} (#${playerObject.player.trader_score_secondary_rank})`
+        + `\n**Master Builders:** ${playerObject.player.building_score_main.format()} (#${playerObject.player.building_score_main_rank})`
+        + `\n**Building Levels:** ${playerObject.player.building_score_secondary.format()} (#${playerObject.player.building_score_secondary_rank})`
+        + `\n**Scientists:** ${playerObject.player.research_score_main.format()} (#${playerObject.player.research_score_main_rank})`
+        + `\n**Levels of Research:** ${playerObject.player.research_score_secondary.format()} (#${playerObject.player.research_score_secondary_rank})`
+        + `\n**Offensive Points:** ${playerObject.player.offense.format()} (#${playerObject.player.offense_rank})`
+        + `\n**Defence Points:** ${playerObject.player.defense.format()} (#${playerObject.player.defense_rank})`
+        + `\n**Trader:** ${playerObject.player.trade.format()} (#${playerObject.player.trade_rank})`
+        + `\n**Resources:** ${playerObject.player.resources.format()} (#${playerObject.player.resources_rank})`
+        + `\n**Donations:** ${playerObject.player.donations.format()} (#${playerObject.player.donations_rank})`
+        + `\n**Capture Points:** ${playerObject.player.piracy.format()} (#${playerObject.player.piracy_rank})`,
+        timestamp: Date.parse(playerObject.player.update_time),
+        footer: {icon_url: 'https://i.imgur.com/MBLT0wt.png', text: 'ika-search.com'}
+      }
     }
+    embed_message.embed.author.name = `${playerObject.player.pseudo} ${playerObject.player.tag != null ? '('+playerObject.player.tag+')' : ''}`;
 
-  });
+    return message.channel.send(embed_message);
+  })
 
+  .catch((err) => { return errorHandler.handledError(err) });
 }

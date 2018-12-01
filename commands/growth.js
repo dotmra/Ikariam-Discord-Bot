@@ -4,137 +4,81 @@ const fs = require("fs");
 
 exports.run = (client, message, args, guildConf) => {
 
-  ika.getGuildServer(guildConf, message, (mode, ikaServer) => {
+  let argsArray = args.join(' ').split(', ');
+  let scoreType = "Total Score";
+  let dateNum = 30;
+  args = [argsArray[0]]; // playerName
 
-    let region = client.settings.get(message.guild.id, 'botRegion');
+  if(argsArray.length == 2) {
+    scoreType = argsArray[1];
+  }
+  if(argsArray.length == 3) {
+    scoreType = argsArray[1];
+    dateNum = [argsArray[2]].join('');
+  }
+  if(argsArray.length > 3) {
+    return message.channel.send(`Correct usage: !growth <PlayerName>, [Score Category], [Time in Days]\n*(Score Category and Time in Days is optional. Without <> and [], remember the commas*`)
+      .catch((err) => { return errorHandler.discordMessageError(message, err) });
+  }
 
-    if (!ikaServer) {
-      if (mode == 'server') {
-        return message.channel.send(`You have not yet assigned an Ikariam world to use. Use \`!ikariamworld\` to choose a world to use.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
-      }
-      else {
-        return message.channel.send(`You have not yet assigned an Ikariam world to use in this channel. Use \`!ikariamworld\` to choose a world to use.`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
-      }
+  ika.getIkariamRegionAndWorld(guildConf, message)
+  .then(([mode, region, ikariamWorld]) => {
+    if (!ikariamWorld) {
+      message.channel.send(`You have not yet assigned an Ikariam world to use${mode == 'server' ? '' : ' in this channel'}. Use \`!ikariamworld\` to choose a world to use.`);
+      throw new Error('Error handled: Ikariam world not assigned to channel/guild.');
+    }
+    return ika.verifyPlayerName(region, ikariamWorld, args);
+  })
+
+  .then(([player, region, ikariamWorld]) => {
+    if(!player){
+      message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`);
+      throw new Error('Error handled: Player not found with name provided.');
+    }
+    return ika.getPlayerInfo(region, ikariamWorld, player.id);
+  })
+
+  .then(([region, ikariamWorld, playerObject]) => {
+    if (!playerObject.player.trader_score_secondary) {
+      message.channel.send(`\`${args}\` is a registered player but ika-search does not yet have information about the scores.`);
+      throw new Error('Error handled: Player registerd but no score information available.');
+    }
+    return ika.getScoresInfo(region, ikariamWorld, playerObject, scoreType, dateNum);
+  })
+
+  .then(([scoreTypeItem, playerObject, scoreInfo]) => {
+    if (!scoreTypeItem) {
+      message.channel.send(`Could not find a score category with the name \`${scoreType}\`.`);
+      throw new Error('Error handled: Could not find score category.');
     }
 
-    else {
-      let argsArray = args.join(' ').split(', ');
-      let playerName = [argsArray[0]];
-      let scoreTypeArgs = ["Total Score"];
-      let dateNum = 30;
-      let dateType = 'DAY';
-
-      if(argsArray.length == 1) {
-        playerName = [argsArray[0]];
+    embed_message = {
+      embed: {
+        title: `**${scoreTypeItem.friendlyName} Growth:** ${ika.other_emotes[playerObject.player.state]}`,
+        color: 3447003,
+        author: {name: '', icon_url: 'https://i.imgur.com/hasGiOH.png'},
+        description: '',
+        timestamp: Date.parse(scoreInfo[scoreInfo.length - 1].d),
+        footer: {icon_url: 'https://i.imgur.com/MBLT0wt.png', text: 'ika-search.com'}
       }
-      else if(argsArray.length == 2) {
-        scoreTypeArgs = [argsArray[1]];
-      }
-      else if(argsArray.length == 3) {
-        scoreTypeArgs = [argsArray[1]];
-        dateNum = [argsArray[2]].join('');
-        dateType = 'DAY';
-      }
-      else {
-        message.channel.send(`Correct usage: !growth <PlayerName>, [Score Category], [Time in Days]\n*(Score Category and Time in Days is optional. Without <> and [], remember the commas*`)
-          .catch((err) => { return errorHandler.discordMessageError(message, err) });
-      }
-
-      ika.verifyPlayerName(region, ikaServer, playerName)
-      .then((result) => {
-
-        if(!result) {
-          message.channel.send(`Could not find a player with the name \`${args.join(' ')}\`. Please try again.`)
-            .catch((err) => { return errorHandler.discordMessageError(message, err) });
-        }
-        else {
-
-          let scoreType = '';
-          let scoreTypeFriendly = '';
-          fs.readFile('./data/scoreTypes.json', 'UTF-8', (err, data) => {
-            if (err) throw err;
-            let json_data = JSON.parse(data);
-
-            scoreTypeItem = json_data.scoreCategories.find(item => item.aliases.includes(scoreTypeArgs.join(' ').toLowerCase()));
-
-            if(!scoreTypeItem) {
-              message.channel.send(`Could not find a score category with the name \`${scoreTypeArgs.join(' ')}\`. Please try again.`);
-            }
-
-            else {
-              scoreType = scoreTypeItem.rawName;
-              scoreTypeFriendly = scoreTypeItem.friendlyName;
-
-              ika.getScoresInfo(region, ikaServer, result.id, scoreType, dateNum, dateType)
-              .then((results) => {
-
-                let daysAmount1 = new Date(Date.parse(results[results.length - 1].d)).getTime() - new Date(Date.parse(results[0].d)).getTime();
-                let daysAmount2 = Math.ceil(daysAmount1 / (1000 * 3600 * 24));
-
-                message_embed = {
-                  embed: {
-                    title: `**${scoreTypeFriendly} Growth:**`,
-                    color: 3447003,
-                    author: {
-                      name: '',
-                      icon_url: 'https://i.imgur.com/hasGiOH.png'
-                    },
-                    description: '',
-                    timestamp: Date.parse(results[results.length - 1].d),
-                    footer: {
-                      icon_url: 'https://i.imgur.com/MBLT0wt.png',
-                      text: 'ika-search.com'
-                    }
-                  }
-                }
-
-                ika.getPlayerInfo(region, ikaServer, result.id)
-                .then((playerObject) => {
-
-                  message_embed.embed.author.name = `${result.pseudo}`;
-                  if (playerObject.player.tag) {
-                    message_embed.embed.author.name += ` (${playerObject.player.tag})`;
-                  }
-
-                  let growthPercentage = ((results[results.length - 1].v - results[0].v) / results[0].v) * 100;
-                  let growthPoints = results[results.length - 1].v - results[0].v;
-
-                  message_embed.embed.description += `\n**${results[0].v.format()} -> ${results[results.length - 1].v.format()}**`;
-                  message_embed.embed.description += `\n**#${Math.abs(results[0].r)} -> #${Math.abs(results[results.length - 1].r)}**`;
-
-                  if(growthPercentage < 0) { // if negative, else add a + in front
-                    message_embed.embed.description += `\n**${growthPoints.format()}** Points`;
-                    message_embed.embed.description += `\n**${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
-                  }
-                  else {
-                    message_embed.embed.description += `\n**+${growthPoints.format()}** Points`;
-                    message_embed.embed.description += `\n**+${growthPercentage.toFixed(2)}%** over ${daysAmount2} days`;
-                  }
-
-                  message_embed.embed.title += ` ${ika.other_emotes[playerObject.player.state]}`;
-
-                  message.channel.send(message_embed)
-                    .catch((err) => { return errorHandler.discordMessageError(message, err) });
-
-                })
-                .catch((err) => {
-                  return errorHandler.otherError(err);
-                });
-              })
-              .catch((err) => {
-                return errorHandler.otherError(err);
-              });
-            }
-          });
-        }
-      })
-      .catch((err) => {
-        return errorHandler.otherError(err);
-      });
     }
+    embed_message.embed.author.name = `${playerObject.player.pseudo} ${playerObject.player.tag != null ? '('+playerObject.player.tag+')' : ''}`;
 
+    let dateTime = new Date(Date.parse(scoreInfo[scoreInfo.length - 1].d)).getTime() - new Date(Date.parse(scoreInfo[0].d)).getTime();
+    let growthDaysAmount = Math.ceil(dateTime / (1000 * 3600 * 24));
+    let growthPercentage = ((scoreInfo[scoreInfo.length - 1].v - scoreInfo[0].v) / scoreInfo[0].v) * 100;
+    let growthPoints = scoreInfo[scoreInfo.length - 1].v - scoreInfo[0].v;
+
+    embed_message.embed.description += `\n**${scoreInfo[0].v.format()} -> ${scoreInfo[scoreInfo.length - 1].v.format()}**`; // 33,059 -> 75,878
+    embed_message.embed.description += `\n**#${Math.abs(scoreInfo[0].r)} -> #${Math.abs(scoreInfo[scoreInfo.length - 1].r)}**`; // #77 -> #19
+    embed_message.embed.description += `\n**${growthPercentage > 0 ? '+' : ''}${growthPoints.format()}** Points`; // -19,221 Points
+    embed_message.embed.description += `\n**${growthPercentage > 0 ? '+' : ''}${growthPercentage.toFixed(2)}%** over ${growthDaysAmount} days`; // -99.82% over 89 days
+
+    message.channel.send(embed_message)
+      .catch((err) => { return errorHandler.discordMessageError(message, err) });
+  })
+
+  .catch((err) => {
+    return errorHandler.handledError(err);
   });
-
 }
