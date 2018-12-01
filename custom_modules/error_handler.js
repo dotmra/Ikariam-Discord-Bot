@@ -18,6 +18,10 @@ module.exports = {
     return console.error(err);
   },
 
+  handledError: function(err) {
+    return console.log(err);
+  },
+
   customError: function(customErrorMessage) {
     return console.log(customErrorMessage);
   }
