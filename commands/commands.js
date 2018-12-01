@@ -9,17 +9,17 @@ exports.run = (client, message, args) => {
         {
           name: "Normal Commands",
           value: ""
-          + "\n**!info** <Player Name>"
-          + "\n**!find** <Player Name>"
-          + "\n**!island**  <XX:YY>"
-          + "\n**!growth** <Player Name>, [Score Category], [Duration In Days]"
+          + "\n**!info** Player Name"
+          + "\n**!find** Player Name"
+          + "\n**!island**  XX:YY"
+          + "\n**!growth** Player Name, Score Category, Duration In Days (last 2 are optional)"
         },
         {
           name: "Administrator Commands",
           value: ""
-          + "\n**!region** <Ikariam Region>"
-          + "\n**!mode** <Server/Channel>"
-          + "\n**!ikariamworld** <Ikariam World>"
+          + "\n**!region** Ikariam Region"
+          + "\n**!mode** Server/Channel"
+          + "\n**!ikariamworld** Ikariam World"
         },
         {
           name: "Need help?",
