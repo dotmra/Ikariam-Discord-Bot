@@ -57,7 +57,7 @@ module.exports = {
     return await promise;
   },
 
-  getPlayerIds: async function(iso, ikaServer) {
+  getPlayerAndAllianceIds: async function(iso, ikaServer) {
     let promise = new Promise((resolve, reject) => {
       let options = {
         method: 'POST',
@@ -86,6 +86,27 @@ module.exports = {
           action: "playerInfo",
           iso: region,
           playerId: playerId,
+          server: ikaWorld
+        }
+      }
+      request(options)
+      .then((body) => {
+        resolve([region, ikaWorld, JSON.parse(body)]);
+      })
+      .catch((err) => {reject(err)});
+    });
+    return await promise;
+  },
+
+  getAllianceInfo: async function(region, ikaWorld, allianceId) {
+    let promise = new Promise((resolve, reject) => {
+      let options = {
+        method: 'POST',
+        uri:'http://ika-search.com/getSite.py',
+        formData: {
+          action: 'allyInfo',
+          iso: region,
+          allyId: allianceId,
           server: ikaWorld
         }
       }
@@ -157,17 +178,38 @@ module.exports = {
     return await promise;
   },
 
-  verifyPlayerName: async function(iso, ikaServer, args) {
+  verifyPlayerName: async function(region, ikaWorld, args) {
     let promise = new Promise((resolve, reject) => {
-      module.exports.getPlayerIds(iso, ikaServer)
-      .then((playerArray) => {
+      module.exports.getPlayerAndAllianceIds(region, ikaWorld)
+      .then((playerAndAllianceObject) => {
         try {
-          let player = playerArray.player.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
+          let player = playerAndAllianceObject.player.find(item => item.pseudo.toLowerCase() == args.join(' ').toLowerCase());
           if (!player) {
-            resolve([false, iso, ikaServer]);
+            resolve([false, region, ikaWorld]);
           }
           else {
-            resolve([player, iso, ikaServer]);
+            resolve([player, region, ikaWorld]);
+          }
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .catch((err) => {reject(err)});
+    });
+    return await promise;
+  },
+
+  verifyAllianceTagOrName: async function(region, ikaWorld, args) {
+    let promise = new Promise((resolve, reject) => {
+      module.exports.getPlayerAndAllianceIds(region, ikaWorld)
+      .then((playerAndAllianceObject) => {
+        try {
+          let alliance = playerAndAllianceObject.ally.find(item => item.tag.toLowerCase() == args.join(' ').toLowerCase() || item.name.toLowerCase() == args.join(' ').toLowerCase());
+          if (!alliance) {
+            resolve([false, region, ikaWorld]);
+          }
+          else {
+            resolve([alliance, region, ikaWorld]);
           }
         } catch (err) {
           reject(err);

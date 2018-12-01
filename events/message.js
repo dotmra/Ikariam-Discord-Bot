@@ -44,6 +44,12 @@ module.exports = (client, message, defaultSettings) => {
       commandFile.run(client, message, args, guildConf);
     }
 
+    if (command === "alliance") {
+      limiter.schedule(() => {
+        commandFile.run(client, message, args, guildConf);
+      });
+    }
+
     if (command === "find") {
       limiter.schedule(() => {
         commandFile.run(client, message, args, guildConf);
