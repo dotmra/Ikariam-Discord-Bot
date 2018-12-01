@@ -11,6 +11,7 @@ exports.run = (client, message, args) => {
           value: ""
           + "\n**!info** Player Name"
           + "\n**!find** Player Name"
+          + "\n**!alliance** Alliance Name/Tag"
           + "\n**!island**  XX:YY"
           + "\n**!growth** Player Name, Score Category, Duration In Days (last 2 are optional)"
         },
