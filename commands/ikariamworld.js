@@ -1,6 +1,6 @@
+/*eslint no-unused-vars: 0*/
 const ika = require('../custom_modules/ika.js');
 const errorHandler = require('../custom_modules/error_handler.js');
-
 exports.run = (client, message, args, guildConf) => {
 
   if (!message.member.hasPermission('ADMINISTRATOR')) {
@@ -14,7 +14,7 @@ exports.run = (client, message, args, guildConf) => {
   region = client.settings.get(message.guild.id, 'botRegion');
 
   ika.getIkariamRegionAndWorlds(region)
-    .then(([region]) => {
+    .then(([ikariamRegionsObject, region]) => {
       ikariamWorld = region[2].find(item => item.toLowerCase() == args.join(' ').toLowerCase());
       if (!ikariamWorld) {
         message.channel.send(`Could not find an Ikariam world with the name \`${args.join(' ')}\`. Available worlds: ${region[2].join(', ')}.`);

@@ -11,7 +11,7 @@ exports.run = (client, message, args) => {
   let commandMessage;
 
   ika.getIkariamRegionAndWorlds(args.join(' '))
-    .then(([region, regionObject, foundRegion]) => {
+    .then(([regionObject, region, foundRegion]) => {
       if(!foundRegion){
         commandMessage = '**Available Ikariam Regions:**\n';
         regionObject.forEach((region) => {
