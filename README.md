@@ -2,6 +2,7 @@
 [![GitHub license](https://img.shields.io/github/license/7marre/Ikariam-Discord-Bot.svg)](https://github.com/7marre/Ikariam-Discord-Bot/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/7marre/Ikariam-Discord-Bot.svg)](https://github.com/7marre/Ikariam-Discord-Bot/issues)
 ![David](https://img.shields.io/david/7marre/ikariam-discord-bot.svg)
+[![Build Status](https://travis-ci.com/7marre/Ikariam-Discord-Bot.svg?branch=master)](https://travis-ci.com/7marre/Ikariam-Discord-Bot)
 
 # Ikariam-Discord-Bot
 
