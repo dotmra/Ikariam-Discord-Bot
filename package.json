@@ -1,7 +1,7 @@
 {
   "name": "ikariam-discord-bot",
   "version": "1.0.0",
-  "description": "A Discord Bot for the game Ikariam, used on the Ikariam US Community Discord Server. https://discord.gg/KBhzWRe",
+  "description": "A Discord Bot for the browser game Ikariam.",
   "main": "app.js",
   "dependencies": {
     "better-sqlite-pool": "^0.1.2",
@@ -15,10 +15,13 @@
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.9.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "eslint ."
   },
   "author": "7marre",
-  "license": "ISC"
+  "license": "UNLICENSED"
 }
