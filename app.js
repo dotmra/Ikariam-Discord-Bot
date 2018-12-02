@@ -1,13 +1,12 @@
 const Discord = require('discord.js');
-const fs = require('fs');
-const Enmap = require("enmap");
+const Enmap = require('enmap');
 const schedule = require('node-schedule');
 const client = new Discord.Client();
 
 client.config = require('./config.json');
 
 client.clientData = new Enmap({
-  name: "clientData",
+  name: 'clientData',
   fetchAll: false,
   autoFetch: true,
   cloneLevel: 'deep',
@@ -15,7 +14,7 @@ client.clientData = new Enmap({
 });
 
 client.settings = new Enmap({
-  name: "settings",
+  name: 'settings',
   fetchAll: false,
   autoFetch: true,
   cloneLevel: 'deep',
@@ -23,16 +22,16 @@ client.settings = new Enmap({
 });
 
 const defaultSettings = {
-  prefix: "!",
-  botMode: "server",
-  botRegion: "us",
-  serverModeWorld: "",
+  prefix: '!',
+  botMode: 'server',
+  botRegion: 'us',
+  serverModeWorld: '',
   channelModeWorlds: {
   },
-  newsChannel: ""
-}
+  newsChannel: ''
+};
 
-var checkGameNews = schedule.scheduleJob('*/10 * * * *', () => {
+schedule.scheduleJob('*/10 * * * *', () => {
   require('./events/checkGameNews.js')(client, defaultSettings);
 });
 

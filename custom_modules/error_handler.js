@@ -1,7 +1,7 @@
 module.exports = {
 
   discordMessageError: function(message, err) {
-    if(err != "DiscordAPIError: Missing Permissions"){
+    if(err != 'DiscordAPIError: Missing Permissions'){
       return console.error(err);
     }
     return console.log(`Missing permissions in #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions). Message:\n${message.content}`);

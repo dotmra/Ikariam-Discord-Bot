@@ -9,16 +9,16 @@ module.exports = (client, defaultSettings) => {
       transform: (body) => {
         return cheerio.load(body);
       }
-    }
+    };
     request(options)
-    .then((data) => {
-      callback(data);
-    })
-    .catch((error) => {
-      if (error.name == 'RequestError') {
-        return console.log("ENOTFOUND, Unable to get address info: " + error.message);
-      }
-    });
+      .then((data) => {
+        callback(data);
+      })
+      .catch((error) => {
+        if (error.name == 'RequestError') {
+          return console.log(`ENOTFOUND, Unable to get address info: ${error.message}`);
+        }
+      });
   }
 
   client.clientData.ensure('clientSettings', {
@@ -43,7 +43,7 @@ module.exports = (client, defaultSettings) => {
         let link = element.children[3].children[0].children[0].data;
         let description = element.children[5].children[0].children[0].data;
 
-        message_embed = {
+        let message_embed = {
           embed: {
             color: 3447003,
             author: {
@@ -51,30 +51,29 @@ module.exports = (client, defaultSettings) => {
               icon_url: 'https://i.imgur.com/n6qhq37.png'
             },
             fields: [{
-                name: `**${title}**`,
-                value: `${description}\n\n${link}`
-              }
-            ],
+              name: `**${title}**`,
+              value: `${description}\n\n${link}`
+            }],
             timestamp: Date.parse(pubDate),
             footer: {
               icon_url: 'https://i.imgur.com/szyewRM.png',
               text: 'board.us.ikariam.gameforge.com'
             }
           }
-        }
+        };
 
         client.guilds.forEach(guild => {
           client.settings.ensure(guild.id, defaultSettings);
-          let newsChannelId = client.settings.get(guild.id, "newsChannel");
+          let newsChannelId = client.settings.get(guild.id, 'newsChannel');
           if (!newsChannelId) {
             return;
           }
           else {
             client.channels.get(newsChannelId).send(message_embed).catch((err) => {
-              if(err != "DiscordAPIError: Missing Permissions"){
+              if(err != 'DiscordAPIError: Missing Permissions'){
                 return console.error(err);
               }
-              return console.log(`Posting of news message: No permission to send message to channel #${message.channel.name} in guild '${message.guild.name}' (DiscordAPIError: Missing Permissions)`);
+              return console.log(`Posting of news message: No permission to send message to channel #${client.channels.get(newsChannelId).name} in guild '${guild.name}' (DiscordAPIError: Missing Permissions)`);
             });
             console.log(`Sent news post in guild '${guild.name}' in channel '#${client.channels.get(newsChannelId).name}'`);
           }
@@ -85,4 +84,4 @@ module.exports = (client, defaultSettings) => {
 
   });
 
-}
+};

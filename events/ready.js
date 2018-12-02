@@ -7,4 +7,4 @@ module.exports = (client) => {
   client.guilds.forEach(guild => {
     console.log(`ID: ${guild.id}, NAME: ${guild.name}, MEMBERS: ${guild.memberCount}`);
   });
-}
+};
