@@ -1,3 +1,8 @@
+
+[![GitHub license](https://img.shields.io/github/license/7marre/Ikariam-Discord-Bot.svg)](https://github.com/7marre/Ikariam-Discord-Bot/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/7marre/Ikariam-Discord-Bot.svg)](https://github.com/7marre/Ikariam-Discord-Bot/issues)
+![David](https://img.shields.io/david/7marre/ikariam-discord-bot.svg)
+
 # Ikariam-Discord-Bot
 
 Ikariam Discord Bot is a Discord Bot for the browser game Ikariam. The bot makes it easy to find information about players, islands and alliances quickly and adds features that are not even available in the game itself. The bot is made to show information mobile friendly, so you can enjoy the awesome features of the bot on mobile without any frustration.
