@@ -12,27 +12,31 @@ Ikariam Discord Bot is a Discord Bot for the browser game Ikariam. The bot makes
 For information on how to add the bot to your own Discord server follow the instructions on this wiki page: https://github.com/7marre/Ikariam-Discord-Bot/wiki/Adding-the-bot-to-your-server
 
 ## Commands:
-- !info \<Player Name\> -- Display information about a player, like rankings in all score categories and if the player is inactive or in vacation mode.
+- !info \<Player Name\> -- Display information about a player.
 
-- !find \<Player Name\> -- Display a list of a player's towns.
+- !find \<Player Name\> -- Display information and location of a player's towns.
 
-- !growth \<Player Name\>, \[Score Category\], \[Duration In Days\] -- Display the growth of a player's score in specified category over specified amount of days. Score Category and Duration In Days are optional arguments.
+- !growth \<Player Name\>, \[Score Category\], \[Duration In Days\] -- Display information about a player's growth.
 
-- !island \<XX:YY\> -- Display information about an island like the towns, it's players, military score, the level of saw mill, wonder etc.
+- !alliance \<Alliance Name/Tag\> -- Display information about an alliance.
+
+- !island \<XX:YY\> -- Display information about an island.
+
+*(all commands without <, >, [ and ])*
 
 
 ### Admin Commands (must be an Administrator on the Discord server):
-- !region \<Ikariam Region\> -- Set the Ikariam region the bot should use.
+- !region \<Ikariam Region\> -- Set the Ikariam Server Region the bot will use.
 
-- !mode \<Server/Channel\> -- Set the mode the bot will work in. Channel mode allows you to set one Ikariam world per Discord channel. Server mode uses one Ikariam world across all Discord channels.
+- !mode \<Server/Channel\> -- Set the mode the bot will use.
   
-- !ikariamworld \<Ikariam World\> -- Set the Ikariam world to use for the Discord server or channel.
+- !ikariamworld \<Ikariam World\> -- Set the Ikariam world the bot will use on the Discord server/channel.
 
 ## Planned features:
 
 - Set your own command prefix
 
-- !alliance and !alliancegrowth
+- !alliancegrowth
 
 - !traveltime
 
